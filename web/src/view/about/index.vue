@@ -1,170 +1,43 @@
-<!-- Modified for ai-pcdn on 2026-07-21: 更新产品品牌，保留上游项目与版权归属。 -->
+<!-- Modified for ai-pcdn on 2026-07-21: 重构关于页为 ai-pcdn 产品信息。 -->
 <template>
   <div class="mt-2">
-    <div class="flex flex-col md:flex-row gap-4">
-      <div class="w-full md:w-1/2">
-        <el-card class="min-w-96">
-          <template #header>
-            <el-divider>ai-pcdn</el-divider>
-          </template>
-          <div>
-            <div class="w-full flex items-center justify-center">
-              <a href="https://github.com/flipped-aurora/gin-vue-admin">
-                  <img
-                    class="org-img dom-center"
-                    src="@/assets/logo.png"
-                    alt="Gin-Vue-Admin"
-                  />
-                </a>
-            </div>
-            <p class="text-center text-sm text-slate-500 mb-4">
-              ai-pcdn 基于 Gin-Vue-Admin 开发
-            </p>
-            <div class="w-full flex items-center justify-around">
-              <a href="https://github.com/flipped-aurora/gin-vue-admin">
-                  <img
-                    class="dom-center"
-                    src="https://img.shields.io/github/watchers/flipped-aurora/gin-vue-admin.svg?label=Watch"
-                    alt=""
-                  />
-                </a>
-                <a href="https://github.com/flipped-aurora/gin-vue-admin">
-                  <img
-                    class="dom-center"
-                    src="https://img.shields.io/github/stars/flipped-aurora/gin-vue-admin.svg?style=social"
-                    alt=""
-                  />
-                </a>
-                <a href="https://github.com/flipped-aurora/gin-vue-admin">
-                  <img
-                    class="dom-center"
-                    src="https://img.shields.io/github/forks/flipped-aurora/gin-vue-admin.svg?label=Fork"
-                    alt=""
-                  />
-                </a>
-            </div>
+    <el-card>
+      <section class="mx-auto max-w-4xl px-4 py-10 sm:px-8 sm:py-14">
+        <div
+          class="mb-5 inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold tracking-[0.16em] text-blue-600 dark:bg-blue-950/40 dark:text-blue-300"
+        >
+          AI-PCDN
+        </div>
+        <h1 class="text-3xl font-bold text-base-text sm:text-4xl">ai-pcdn</h1>
+        <p class="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
+          面向 PCDN 业务的管理平台，提供统一、清晰的后台操作入口。
+        </p>
+
+        <dl class="mt-10 grid gap-4 sm:grid-cols-2">
+          <div class="rounded-xl border border-border bg-main p-5">
+            <dt class="text-sm text-muted-foreground">产品名称</dt>
+            <dd class="mt-2 text-lg font-semibold text-base-text">ai-pcdn</dd>
           </div>
-        </el-card>
-        <el-card class="min-w-96 mt-5">
-          <template #header>
-            <div>flipped-aurora团队</div>
-          </template>
-          <div>
-            <div class="w-full flex items-center justify-center">
-                <a href="https://github.com/flipped-aurora">
-                  <img
-                    class="org-img dom-center"
-                    src="@/assets/flipped-aurora.png"
-                    alt="flipped-aurora"
-                  />
-                </a>
-              </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 mt-4">
-              <div v-for="(item, index) in members" :key="index" class="min-h-10 flex items-center">
-                <a :href="item.html_url" class="flex items-center group">
-                  <img class="w-8 h-8 rounded-full" :src="item.avatar_url" />
-                  <el-link
-                    class="text-blue-700 ml-2 text-lg font-bold font-sans break-all"
-                    >{{ item.login }}</el-link
-                  >
-                </a>
-              </div>
-            </div>
+          <div class="rounded-xl border border-border bg-main p-5">
+            <dt class="text-sm text-muted-foreground">产品定位</dt>
+            <dd class="mt-2 text-lg font-semibold text-base-text">PCDN 管理平台</dd>
           </div>
-        </el-card>
-      </div>
-      <div class="w-full md:w-1/2">
-        <el-card>
-          <template #header>
-            <div>提交记录</div>
-          </template>
-          <div class="h-[calc(100vh-300px)] overflow-y-auto">
-            <el-timeline>
-              <el-timeline-item
-                v-for="(item, index) in dataTimeline"
-                :key="index"
-                :timestamp="item.from"
-                placement="top"
-              >
-                <el-card>
-                  <h4>{{ item.title }}</h4>
-                  <p>{{ item.message }}</p>
-                </el-card>
-              </el-timeline-item>
-            </el-timeline>
+          <div class="rounded-xl border border-border bg-main p-5">
+            <dt class="text-sm text-muted-foreground">前端技术</dt>
+            <dd class="mt-2 text-lg font-semibold text-base-text">Vue 3 / Vite</dd>
           </div>
-         <div class="w-full flex items-center justify-center">
-          <el-button class="load-more" type="primary" link @click="loadMore">
-            Load more
-          </el-button>
-         </div>
-        </el-card>
-      </div>
-    </div>
+          <div class="rounded-xl border border-border bg-main p-5">
+            <dt class="text-sm text-muted-foreground">后端与数据</dt>
+            <dd class="mt-2 text-lg font-semibold text-base-text">Go / Gin / SQLite</dd>
+          </div>
+        </dl>
+      </section>
+    </el-card>
   </div>
 </template>
 
 <script setup>
-  import { ref } from 'vue'
-  import { Commits, Members } from '@/api/github'
-  import { formatTimeToStr } from '@/utils/date'
-  const page = ref(0)
-
   defineOptions({
     name: 'About'
   })
-
-  const loadMore = () => {
-    page.value++
-    loadCommits()
-  }
-
-  const dataTimeline = ref([])
-  const loadCommits = () => {
-    Commits(page.value).then(({ data }) => {
-      data.forEach((element) => {
-        if (element.commit.message) {
-          dataTimeline.value.push({
-            from: formatTimeToStr(element.commit.author.date, 'yyyy-MM-dd'),
-            title: element.commit.author.name,
-            showDayAndMonth: true,
-            message: element.commit.message
-          })
-        }
-      })
-    })
-  }
-
-  const members = ref([])
-  const loadMembers = () => {
-    Members().then(({ data }) => {
-      members.value = data
-      members.value.sort()
-    })
-  }
-
-  loadCommits()
-  loadMembers()
 </script>
-
-<style scoped>
-  .avatar-img {
-    float: left;
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    margin-top: 15px;
-  }
-
-  .org-img {
-    height: 150px;
-    width: 150px;
-  }
-
-  .dom-center {
-    margin-left: 50%;
-    transform: translateX(-50%);
-  }
-</style>

@@ -2,7 +2,7 @@
   "name": "ai-pcdn",
   "version": "3.0.0",
   "private": true,
-  "modifiedNotice": "Modified for ai-pcdn on 2026-07-21; based on Gin-Vue-Admin.",
+  "modifiedNotice": "Modified for ai-pcdn on 2026-07-21.",
   "scripts": {
     "dev": "node openDocument.js && vite --host --mode development",
     "serve": "node openDocument.js && vite --host --mode development",

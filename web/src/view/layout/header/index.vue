@@ -1,3 +1,4 @@
+<!-- Modified for ai-pcdn on 2026-07-21: 移除布局左上角 Logo。 -->
 <template>
   <div
     class="flex justify-between fixed top-0 right-0 z-20 h-16 text-base-text items-center px-2"
@@ -26,9 +27,8 @@
         class="flex min-w-48 cursor-pointer items-center justify-center"
         @click="router.push({ path: '/' })"
       >
-        <Logo />
         <div
-          class="inline-flex font-bold text-2xl ml-2"
+          class="inline-flex font-bold text-2xl"
           :class="
             (effectiveMode === 'head' || effectiveMode === 'combination') &&
             'min-w-fit'
@@ -173,7 +173,6 @@
   import { setUserAuthority } from '@/api/user'
   import { fmtTitle } from '@/utils/fmtRouterTitle'
   import gvaAside from '@/view/layout/aside/index.vue'
-  import Logo from '@/components/logo/index.vue'
   import { useLayoutMode } from '@/hooks/useLayoutMode'
   import { useSideWidth } from '@/hooks/useSideWidth'
   import { cn, FOCUS_RING } from '@/core/componentLibrary/utils'

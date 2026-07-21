@@ -1,0 +1,18 @@
+package router
+
+import "github.com/flipped-aurora/gin-vue-admin/server/plugin/pcdn/api"
+
+// RouterGroup PCDN 路由聚合入口
+type RouterGroup struct {
+	NodeRouter
+	AgentRouter
+}
+
+// RouterGroupApp 全局路由组实例，供 initialize 层引用
+var RouterGroupApp = new(RouterGroup)
+
+// 业务 api 引用
+var (
+	nodeApi  = api.ApiGroupApp.NodeApi
+	agentApi = api.ApiGroupApp.AgentApi
+)

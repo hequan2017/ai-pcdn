@@ -1,3 +1,4 @@
+<!-- Modified for ai-pcdn on 2026-07-21: 移除移动菜单左上角 Logo。 -->
 <template>
   <el-drawer
     v-model="open"
@@ -7,12 +8,10 @@
     class="gva-mobile-menu-drawer"
   >
     <div class="flex h-full flex-col" :class="[surfaceClass, siderDarkClass]">
-      <!-- Logo -->
       <div
         class="flex h-16 flex-shrink-0 cursor-pointer items-center gap-2 px-4"
         @click="goHome"
       >
-        <Logo :dark="sidebarDark" />
         <span class="whitespace-nowrap text-xl font-bold">
           {{ $GIN_VUE_ADMIN.appName }}
         </span>
@@ -33,7 +32,6 @@
 </template>
 
 <script setup>
-  import Logo from '@/components/logo/index.vue'
   import { computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { storeToRefs } from 'pinia'
@@ -52,7 +50,7 @@
   const routerStore = useRouterStore()
 
   const menus = computed(() => routerStore.rootMenus)
-  const { menuTheme, surfaceClass, siderDarkClass, sidebarDark } = useSidebarTheme()
+  const { menuTheme, surfaceClass, siderDarkClass } = useSidebarTheme()
   const { activeKey, openKeys } = useMenuActive(menus, menuTheme)
   const { navigate } = useMenuNavigation()
 

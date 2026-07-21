@@ -1,4 +1,4 @@
-<!-- Modified for ai-pcdn on 2026-07-21: 更新产品品牌，保留上游项目归属。 -->
+<!-- Modified for ai-pcdn on 2026-07-21: 已获商业授权，统一为 ai-pcdn 产品信息。 -->
 <template>
   <div class="gva-theme-font">
     <div class="mb-10">
@@ -91,21 +91,11 @@
             <div class="flex-1">
               <h4 class="text-xl font-semibold gva-theme-text-main mb-3">ai-pcdn</h4>
               <p class="text-sm gva-theme-text-sub mb-5 leading-relaxed">
-                基于 Vue 3、Gin 与 Gin-Vue-Admin 构建的 PCDN 管理平台
+                基于 Vue 3、Gin 与 SQLite 构建的 PCDN 管理平台
               </p>
-              <div class="flex items-center gap-3 text-sm">
-                <a href="https://github.com/flipped-aurora/gin-vue-admin" target="_blank"
-                  class="font-medium transition-colors duration-150 hover:underline"
-                  :style="{ color: settings.themeColor }">
-                  技术底座仓库
-                </a>
-                <span class="text-muted-foreground">·</span>
-                <a href="https://www.gin-vue-admin.com/" target="_blank"
-                  class="font-medium transition-colors duration-150 hover:underline"
-                  :style="{ color: settings.themeColor }">
-                  技术底座文档
-                </a>
-              </div>
+              <p class="text-sm font-medium" :style="{ color: settings.themeColor }">
+                ai-pcdn
+              </p>
             </div>
           </div>
         </div>

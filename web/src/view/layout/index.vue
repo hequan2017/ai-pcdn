@@ -1,3 +1,4 @@
+<!-- Modified for ai-pcdn on 2026-07-21: 已获商业授权，移除版权页脚。 -->
 <template>
   <div
     class="bg-main text-base-text w-screen h-screen"
@@ -54,7 +55,6 @@
               </transition>
             </div>
           </router-view>
-          <BottomInfo />
         </div>
       </div>
     </div>
@@ -69,7 +69,6 @@
   import { useSideWidth } from '@/hooks/useSideWidth'
   import useResponsive from '@/hooks/responsive'
   import GvaTabs from './tabs/index.vue'
-  import BottomInfo from '@/components/bottomInfo/bottomInfo.vue'
   import { emitter } from '@/utils/bus.js'
   import { computed, ref, onMounted, nextTick, reactive, watchEffect } from 'vue'
   import { useRouter, useRoute } from 'vue-router'

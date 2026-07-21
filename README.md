@@ -1,7 +1,6 @@
 # ai-pcdn
 
 > Modified for ai-pcdn on 2026-07-21: 增加产品说明与部署文档。
-> 本项目基于 Gin-Vue-Admin 开发，原项目版权、授权声明及 [LICENSE](./LICENSE) 保持有效。
 
 ai-pcdn 是基于 Go、Gin、Vue 3 和 Vite 构建的 PCDN 管理平台。仓库包含：
 
@@ -128,6 +127,6 @@ cd ../web && npm run build
 docker compose -f ../deploy/docker-compose/docker-compose.yaml config
 ```
 
-## 授权与版权
+## 授权说明
 
-ai-pcdn 对产品展示名称进行了定制，但 Gin-Vue-Admin 的版权、作者归属、商用授权提示及许可证义务仍须保留。生产环境或组织部署前，请阅读仓库根目录的 [LICENSE](./LICENSE) 并确认已具备相应授权。
+部署和使用 ai-pcdn 时，请遵循项目实际授权约定，并妥善保管商业授权凭证。

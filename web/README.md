@@ -1,6 +1,6 @@
 # ai-pcdn web
 
-> Modified for ai-pcdn on 2026-07-21. This frontend is based on Gin-Vue-Admin; upstream license and attribution remain applicable.
+> Modified for ai-pcdn on 2026-07-21.
 
 ## Project setup
 

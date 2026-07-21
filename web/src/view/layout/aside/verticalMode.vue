@@ -1,15 +1,14 @@
+<!-- Modified for ai-pcdn on 2026-07-21: 移除纵向侧栏左上角 Logo。 -->
 <template>
   <div
     class="fixed left-0 top-0 z-30 flex h-screen flex-col shadow-sider transition-[width] duration-300 ease-in-out"
     :style="{ width: sideWidth + 'px' }"
     :class="[surfaceClass, siderDarkClass]"
   >
-    <!-- Logo -->
     <div
       class="flex h-16 flex-shrink-0 cursor-pointer items-center justify-center gap-2 overflow-hidden px-2"
       @click="router.push({ path: '/' })"
     >
-      <Logo :dark="sidebarDark" />
       <span v-if="!sideCollapse" class="whitespace-nowrap text-xl font-bold">
         {{ $GIN_VUE_ADMIN.appName }}
       </span>
@@ -34,7 +33,6 @@
 </template>
 
 <script setup>
-  import Logo from '@/components/logo/index.vue'
   import { computed } from 'vue'
   import { useRouter } from 'vue-router'
   import { storeToRefs } from 'pinia'
@@ -55,7 +53,7 @@
   const routerStore = useRouterStore()
 
   const menus = computed(() => routerStore.rootMenus)
-  const { menuTheme, surfaceClass, siderDarkClass, sidebarDark } = useSidebarTheme()
+  const { menuTheme, surfaceClass, siderDarkClass } = useSidebarTheme()
   const { activeKey, openKeys } = useMenuActive(menus, menuTheme)
   const { navigate } = useMenuNavigation()
   const { sideWidth } = useSideWidth()
