@@ -2,7 +2,7 @@
 
 ## Active
 
-- [PCDN平台-阶段1](active/pcdn-platform-stage1.md) — 数据底座 + 自助上机（节点/采集/95值/portal/官网），详见 `docs/superpowers/specs/2026-07-21-pcdn-system-design.md`
+- [PCDN平台](active/pcdn-platform-stage1.md) — 阶段1 数据底座+自助上机 ✅、阶段2 监控告警 ✅，功能清单见 `README-pcdn.md`，设计见 `docs/superpowers/specs/2026-07-21-pcdn-system-design.md`
 
 ## Done
 

@@ -45,6 +45,7 @@ type PcdnNode struct {
 	LastHeartbeatAt *time.Time    `json:"lastHeartbeatAt" gorm:"column:last_heartbeat_at;comment:最后心跳时间"`
 	BillingMode    string         `json:"billingMode" gorm:"column:billing_mode;type:varchar(16);comment:计费模式 monthly/p95"`
 	MonthlyPrice   float64        `json:"monthlyPrice" gorm:"column:monthly_price;comment:包月价"`
+	P95UnitPrice   float64        `json:"p95UnitPrice" gorm:"column:p95_unit_price;comment:p95单价(元/Mbps)"`
 	ContractPeriod string         `json:"contractPeriod" gorm:"column:contract_period;type:varchar(32);comment:合同周期"`
 	DeptID         uint           `json:"deptId" gorm:"column:dept_id;comment:归属部门ID(数据权限);index"`
 	CreatedBy      uint           `json:"createdBy" gorm:"column:created_by;comment:创建人(数据权限)"`
