@@ -27,6 +27,12 @@ func Api(ctx context.Context) {
 		{Path: "/pcdn/admin/alarm/rule/delete", Description: "删除告警规则", ApiGroup: "PCDN告警", Method: "DELETE"},
 		{Path: "/pcdn/admin/alarm/rule/deleteByIds", Description: "批量删除告警规则", ApiGroup: "PCDN告警", Method: "DELETE"},
 		{Path: "/pcdn/admin/alarm/record/list", Description: "告警记录列表", ApiGroup: "PCDN告警", Method: "GET"},
+		{Path: "/pcdn/admin/bill/generate", Description: "生成账单", ApiGroup: "PCDN账单", Method: "POST"},
+		{Path: "/pcdn/admin/bill/list", Description: "账单列表", ApiGroup: "PCDN账单", Method: "GET"},
+		{Path: "/pcdn/admin/bill/find", Description: "账单详情", ApiGroup: "PCDN账单", Method: "GET"},
+		{Path: "/pcdn/admin/bill/approve", Description: "审核账单", ApiGroup: "PCDN账单", Method: "PUT"},
+		{Path: "/pcdn/admin/bill/reject", Description: "驳回账单", ApiGroup: "PCDN账单", Method: "PUT"},
+		{Path: "/pcdn/admin/bill/pay", Description: "账单付款", ApiGroup: "PCDN账单", Method: "PUT"},
 	}
 	utils.RegisterApis(entities...)
 }

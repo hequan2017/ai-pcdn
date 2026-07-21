@@ -28,6 +28,19 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <div class="section-title">我的账单</div>
+      <el-table :data="bills" border size="small">
+        <el-table-column label="账期" prop="period" width="100" />
+        <el-table-column label="节点数" prop="nodeCount" width="80" />
+        <el-table-column label="应付总额" width="120"><template #default="s">¥{{ (s.row.totalAmount || 0).toFixed(2) }}</template></el-table-column>
+        <el-table-column label="状态" width="100">
+          <template #default="s">
+            <el-tag :type="({ draft: 'warning', approved: 'primary', paid: 'success', rejected: 'info' }[s.row.status])">{{ ({ draft: '待审核', approved: '已审核', paid: '已付款', rejected: '已驳回' }[s.row.status]) || s.row.status }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="付款时间" prop="paidAt" min-width="160"><template #default="s">{{ s.row.paidAt || '-' }}</template></el-table-column>
+      </el-table>
     </main>
 
     <!-- 添加节点 / 上机 -->
@@ -84,7 +97,7 @@
   import { ref, reactive, onMounted } from 'vue'
   import { useRouter } from 'vue-router'
   import { ElMessage } from 'element-plus'
-  import { myNodes, myNodeTraffic, addNode } from '../api/portal'
+  import { myNodes, myNodeTraffic, addNode, myBills } from '../api/portal'
   import { getUser, clearAuth } from '../store/auth'
 
   const router = useRouter()
@@ -95,7 +108,12 @@
     const r = await myNodes({ page: 1, pageSize: 100 })
     nodes.value = r.data.list || []
   }
-  onMounted(loadNodes)
+  const bills = ref([])
+  const loadBills = async () => {
+    const r = await myBills({ page: 1, pageSize: 20 })
+    bills.value = r.data.list || []
+  }
+  onMounted(() => { loadNodes(); loadBills() })
 
   const logout = () => { clearAuth(); router.push('/login') }
 

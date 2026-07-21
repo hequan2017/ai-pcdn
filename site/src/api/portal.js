@@ -14,3 +14,6 @@ export const myNodeTraffic = (params) => service({ url: '/pcdn/portal/myNodeTraf
 
 // 添加节点（自助上机）
 export const addNode = (data) => service({ url: '/pcdn/portal/addNode', method: 'post', data })
+
+// 我的账单
+export const myBills = (params) => service({ url: '/pcdn/portal/myBills', method: 'get', params })

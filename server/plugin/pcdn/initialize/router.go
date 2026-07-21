@@ -23,6 +23,7 @@ func Router(engine *gin.Engine) {
 		Use(middleware.DataScope())
 	router.RouterGroupApp.NodeRouter.InitNodeRouter(adminGroup)
 	router.RouterGroupApp.AlarmRouter.InitAlarmRouter(adminGroup)
+	router.RouterGroupApp.BillRouter.InitBillRouter(adminGroup)
 
 	// agent 组：采集 agent 上报，node token 鉴权
 	agentGroup := prefix.Group("pcdn/agent")

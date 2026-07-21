@@ -111,6 +111,26 @@ func (a *PortalApi) MyNodes(c *gin.Context) {
 	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: info.Page, PageSize: info.PageSize}, "获取成功", c)
 }
 
+// MyBills 我的账单（需登录）
+// @Tags PcdnPortal
+// @Summary 我的账单
+// @Security ApiKeyAuth
+// @Produce application/json
+// @Param data query request.BillSearch true "查询条件"
+// @Success 200 {object} response.Response{data=response.PageResult,msg=string} "获取成功"
+// @Router /pcdn/portal/myBills [get]
+func (a *PortalApi) MyBills(c *gin.Context) {
+	ownerID := utils.GetUserID(c)
+	var info request.BillSearch
+	_ = c.ShouldBindQuery(&info)
+	list, total, err := billService.GetBillsByOwner(c.Request.Context(), ownerID, info)
+	if err != nil {
+		response.FailWithMessage("查询失败", c)
+		return
+	}
+	response.OkWithDetailed(response.PageResult{List: list, Total: total, Page: info.Page, PageSize: info.PageSize}, "获取成功", c)
+}
+
 // MyNodeTraffic 我的节点流量（需登录，强制校验归属）
 // @Tags PcdnPortal
 // @Summary 我的节点流量

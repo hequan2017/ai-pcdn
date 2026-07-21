@@ -11,5 +11,6 @@ func (r *PortalRouter) InitPortalRouter(public *gin.RouterGroup, private *gin.Ro
 	public.POST("login", portalApi.Login)
 	private.GET("myNodes", portalApi.MyNodes)
 	private.GET("myNodeTraffic", portalApi.MyNodeTraffic)
+	private.GET("myBills", portalApi.MyBills)
 	private.POST("addNode", portalApi.AddNode)
 }
