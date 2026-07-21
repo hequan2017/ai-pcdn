@@ -27,6 +27,7 @@ func (p *plugin) Register(group *gin.Engine) {
 	initialize.Auth(ctx) // 将 pcdn 菜单与 API 授权给超管(888)，否则前端看不到、调用被 Casbin 拦截
 	initialize.Dictionary(ctx)
 	initialize.Gorm(ctx)
+	initialize.SeedDemo(ctx) // 演示数据（生产环境可移除）
 	initialize.Router(group)
 	go initialize.StartScheduler()
 }
