@@ -84,6 +84,16 @@ func (s *Node95Service) FreezeAllNodesMonthly95(ctx context.Context, month time.
 	return nil
 }
 
+// GetNode95List 查询节点 95 值（按 period_type 过滤，最近 100 条）
+func (s *Node95Service) GetNode95List(ctx context.Context, nodeID uint, periodType string) (list []model.PcdnNode95, err error) {
+	db := global.GVA_DB.WithContext(ctx).Where("node_id = ?", nodeID)
+	if periodType != "" {
+		db = db.Where("period_type = ?", periodType)
+	}
+	err = db.Order("period_start desc").Limit(100).Find(&list).Error
+	return
+}
+
 // pick 从流量点集合提取指定维度的值列表
 func pick(points []model.PcdnNodeTrafficPoint, f func(model.PcdnNodeTrafficPoint) int64) []int64 {
 	out := make([]int64, len(points))

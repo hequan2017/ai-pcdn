@@ -18,6 +18,8 @@ func Api(ctx context.Context) {
 		{Path: "/pcdn/admin/node/update", Description: "更新节点", ApiGroup: apiGroupPcdnNode, Method: "PUT"},
 		{Path: "/pcdn/admin/node/delete", Description: "删除节点", ApiGroup: apiGroupPcdnNode, Method: "DELETE"},
 		{Path: "/pcdn/admin/node/deleteByIds", Description: "批量删除节点", ApiGroup: apiGroupPcdnNode, Method: "DELETE"},
+		{Path: "/pcdn/admin/node/traffic", Description: "查询节点流量", ApiGroup: apiGroupPcdnNode, Method: "GET"},
+		{Path: "/pcdn/admin/node/n95", Description: "查询节点95值", ApiGroup: apiGroupPcdnNode, Method: "GET"},
 	}
 	utils.RegisterApis(entities...)
 }

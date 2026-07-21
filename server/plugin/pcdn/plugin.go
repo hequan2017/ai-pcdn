@@ -27,4 +27,5 @@ func (p *plugin) Register(group *gin.Engine) {
 	initialize.Dictionary(ctx)
 	initialize.Gorm(ctx)
 	initialize.Router(group)
+	go initialize.StartScheduler()
 }

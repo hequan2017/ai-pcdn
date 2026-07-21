@@ -13,4 +13,6 @@ func (r *NodeRouter) InitNodeRouter(group *gin.RouterGroup) {
 	group.PUT("node/update", nodeApi.UpdateNode)
 	group.DELETE("node/delete", nodeApi.DeleteNode)
 	group.DELETE("node/deleteByIds", nodeApi.DeleteNodeByIds)
+	group.GET("node/traffic", nodeApi.GetNodeTraffic)
+	group.GET("node/n95", nodeApi.GetNode95)
 }

@@ -1,6 +1,8 @@
 package api
 
 import (
+	"strconv"
+
 	commonReq "github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/plugin/pcdn/model"
@@ -16,8 +18,6 @@ type NodeApi struct{}
 // @Tags PcdnNode
 // @Summary 创建节点
 // @Security ApiKeyAuth
-// @accept application/json
-// @Produce application/json
 // @Param data body model.PcdnNode true "节点信息"
 // @Success 200 {object} response.Response{data=model.PcdnNode,msg=string} "创建成功"
 // @Router /pcdn/admin/node/create [post]
@@ -149,4 +149,46 @@ func (a *NodeApi) GetNodeList(c *gin.Context) {
 		Page:     pageInfo.Page,
 		PageSize: pageInfo.PageSize,
 	}, "获取成功", c)
+}
+
+// GetNodeTraffic 查询节点流量曲线
+// @Tags PcdnNode
+// @Summary 查询节点流量
+// @Security ApiKeyAuth
+// @Param data query request.TrafficQuery true "查询条件"
+// @Success 200 {object} response.Response{data=object,msg=string} "获取成功"
+// @Router /pcdn/admin/node/traffic [get]
+func (a *NodeApi) GetNodeTraffic(c *gin.Context) {
+	var q request.TrafficQuery
+	if err := c.ShouldBindQuery(&q); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	list, err := trafficService.GetTrafficPoints(c.Request.Context(), q.NodeID, q.Iface, q.Start, q.End)
+	if err != nil {
+		logger.WithCtx(c.Request.Context()).Mod("pcdn").Err(err).Error("查询节点流量失败")
+		response.FailWithMessage("查询失败", c)
+		return
+	}
+	response.OkWithDetailed(list, "获取成功", c)
+}
+
+// GetNode95 查询节点 95 值（日/月）
+// @Tags PcdnNode
+// @Summary 查询节点95值
+// @Security ApiKeyAuth
+// @Param nodeId query int true "节点ID"
+// @Param periodType query string false "周期类型 day/month"
+// @Success 200 {object} response.Response{data=object,msg=string} "获取成功"
+// @Router /pcdn/admin/node/n95 [get]
+func (a *NodeApi) GetNode95(c *gin.Context) {
+	nodeID, _ := strconv.ParseUint(c.Query("nodeId"), 10, 64)
+	periodType := c.Query("periodType")
+	list, err := node95Service.GetNode95List(c.Request.Context(), uint(nodeID), periodType)
+	if err != nil {
+		logger.WithCtx(c.Request.Context()).Mod("pcdn").Err(err).Error("查询节点95值失败")
+		response.FailWithMessage("查询失败", c)
+		return
+	}
+	response.OkWithDetailed(list, "获取成功", c)
 }

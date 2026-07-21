@@ -20,4 +20,5 @@ var (
 	trafficService = pcdnService.ServiceGroupApp.TrafficService
 	agentService   = pcdnService.ServiceGroupApp.AgentService
 	portalService  = pcdnService.ServiceGroupApp.PortalService
+	node95Service  = pcdnService.ServiceGroupApp.Node95Service
 )

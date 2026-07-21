@@ -6,6 +6,7 @@ type ServiceGroup struct {
 	TrafficService
 	AgentService
 	PortalService
+	Node95Service
 }
 
 // ServiceGroupApp 全局服务组实例，供 api 层引用
