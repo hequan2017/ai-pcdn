@@ -12,6 +12,14 @@ ai-pcdn 是基于 Go、Gin、Vue 3 和 Vite 构建的 PCDN（P2P CDN）节点供
 - **销售侧**：管理节点接入平台及运行质量，为后续销售对账提供数据基础。
 - **运营侧**：关注节点带宽、在线率、流量、95 值和告警，降低异常导致的结算损失。
 
+## 系统架构
+
+![ai-pcdn 系统架构](docs/architecture/ai-pcdn-architecture.svg)
+
+系统由运营后台、个人门户和采集 Agent 三类入口接入 Gin API，核心业务服务统一处理节点、流量、95 值、告警、结算、对账、利润分析和 Agent OTA，并使用 SQLite 持久化数据。定时任务负责离线检查、95 值计算、月账单和告警检查，告警通过钉钉或企业微信 Webhook 通知。
+
+[打开交互式架构图](docs/architecture/ai-pcdn-architecture.html) · [查看架构图源文件](docs/architecture/ai-pcdn.architecture.json)
+
 ## 已完成功能
 
 ### 数据底座与自助上机
