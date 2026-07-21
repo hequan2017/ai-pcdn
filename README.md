@@ -310,7 +310,6 @@ docker compose -f deploy/docker-compose/docker-compose.yaml config
 | 阶段 4 | 销售对账：平台结算单导入和核对 | 已完成 |
 | 阶段 5 | 利润大盘：收入与成本多维报表 | 已完成 |
 | 阶段 6 | Agent OTA 和批量部署 | 已完成 |
-| 阶段 7 | 个人门户 H5 适配 | 待开发（推迟） |
 
 ## 授权说明
 

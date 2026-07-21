@@ -1,0 +1,229 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "ai-pcdn 系统架构",
+    "subtitle": "节点接入、流量采集、95 值计费、监控告警与结算分析",
+    "output": "ai-pcdn-architecture.html",
+    "viewBox": [1460, 760]
+  },
+  "components": [
+    {
+      "id": "operators",
+      "type": "external",
+      "label": "运维人员",
+      "sublabel": "运营与财务管理",
+      "pos": [40, 130],
+      "size": [150, 66]
+    },
+    {
+      "id": "suppliers",
+      "type": "external",
+      "label": "节点供应商",
+      "sublabel": "注册 / 上机 / 查账",
+      "pos": [40, 330],
+      "size": [150, 66]
+    },
+    {
+      "id": "node_host",
+      "type": "external",
+      "label": "PCDN 节点主机",
+      "sublabel": "带宽与网卡资源",
+      "pos": [40, 530],
+      "size": [150, 66]
+    },
+    {
+      "id": "admin_web",
+      "type": "frontend",
+      "label": "运营后台",
+      "sublabel": "Vue 3 / Vite :8080",
+      "tag": "JWT + Casbin + DataScope",
+      "pos": [280, 130],
+      "size": [190, 72]
+    },
+    {
+      "id": "portal_web",
+      "type": "frontend",
+      "label": "个人门户",
+      "sublabel": "Vue 3 / Vite :5174",
+      "tag": "公开接口 / 个人 JWT",
+      "pos": [280, 330],
+      "size": [190, 72]
+    },
+    {
+      "id": "agent",
+      "type": "backend",
+      "label": "采集 Agent",
+      "sublabel": "Go / JSONL / 心跳重试",
+      "tag": "节点 SN + Token",
+      "pos": [280, 530],
+      "size": [190, 72]
+    },
+    {
+      "id": "api",
+      "type": "backend",
+      "label": "Gin API",
+      "sublabel": ":8888 / admin · portal · agent",
+      "pos": [570, 330],
+      "size": [190, 78]
+    },
+    {
+      "id": "scheduler",
+      "type": "messagebus",
+      "label": "定时任务",
+      "sublabel": "离线 / 95 / 账单 / 告警",
+      "pos": [800, 530],
+      "size": [190, 72]
+    },
+    {
+      "id": "pcdn_service",
+      "type": "backend",
+      "label": "PCDN 业务服务",
+      "sublabel": "节点 / 流量 / 95 / 告警 / 结算",
+      "pos": [840, 330],
+      "size": [220, 82]
+    },
+    {
+      "id": "sqlite",
+      "type": "database",
+      "label": "SQLite",
+      "sublabel": "server/gva.db",
+      "tag": "本地持久化",
+      "pos": [1135, 330],
+      "size": [170, 76]
+    },
+    {
+      "id": "webhook",
+      "type": "external",
+      "label": "告警通知",
+      "sublabel": "钉钉 / 企业微信 Webhook",
+      "pos": [1215, 530],
+      "size": [205, 72]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "ai-pcdn 部署环境",
+      "wraps": [
+        "admin_web",
+        "portal_web",
+        "agent",
+        "api",
+        "scheduler",
+        "pcdn_service",
+        "sqlite"
+      ],
+      "pad": 28
+    }
+  ],
+  "connections": [
+    {
+      "from": "operators",
+      "to": "admin_web",
+      "variant": "emphasis",
+      "route": "orthogonal-h"
+    },
+    {
+      "from": "suppliers",
+      "to": "portal_web",
+      "variant": "emphasis",
+      "route": "orthogonal-h"
+    },
+    {
+      "from": "node_host",
+      "to": "agent",
+      "variant": "emphasis",
+      "route": "orthogonal-h"
+    },
+    {
+      "from": "admin_web",
+      "to": "api",
+      "label": "/pcdn/admin/*",
+      "variant": "security",
+      "fromSide": "right",
+      "toSide": "top",
+      "route": "orthogonal-h",
+      "labelAt": [520, 235]
+    },
+    {
+      "from": "portal_web",
+      "to": "api",
+      "label": "/pcdn/portal/*",
+      "variant": "security",
+      "route": "orthogonal-h"
+    },
+    {
+      "from": "agent",
+      "to": "api",
+      "label": "/pcdn/agent/*",
+      "variant": "security",
+      "fromSide": "right",
+      "toSide": "bottom",
+      "route": "orthogonal-h",
+      "labelAt": [520, 490]
+    },
+    {
+      "from": "api",
+      "to": "pcdn_service",
+      "label": "业务调用",
+      "variant": "emphasis",
+      "route": "orthogonal-h"
+    },
+    {
+      "from": "scheduler",
+      "to": "pcdn_service",
+      "label": "周期计算",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "bottom",
+      "labelDy": -8
+    },
+    {
+      "from": "pcdn_service",
+      "to": "sqlite",
+      "label": "GORM",
+      "variant": "emphasis",
+      "route": "orthogonal-h"
+    },
+    {
+      "from": "pcdn_service",
+      "to": "webhook",
+      "label": "触发 / 恢复",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "left",
+      "route": "orthogonal-v",
+      "labelAt": [1110, 505]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "三类接入",
+      "items": [
+        "运营后台：节点、告警、账单、对账和利润大盘",
+        "个人门户：注册登录、自助上机、流量与账单查询",
+        "采集 Agent：分钟峰值、心跳、失败重试与 OTA 升级"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "核心业务",
+      "items": [
+        "节点、流量、日滚动与月冻结 95 值",
+        "采购结算、销售对账、应收汇总与利润分析",
+        "告警收敛、恢复通知和 Agent 版本发布"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "部署与数据",
+      "items": [
+        "Gin、Vue 3 与 SQLite 支持本地或 Docker Compose 部署",
+        "定时执行离线检查、95 值、月账单与告警检查",
+        "SQLite 和上传目录通过持久化卷保留"
+      ]
+    }
+  ]
+}
