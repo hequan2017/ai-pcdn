@@ -27,4 +27,10 @@ func Router(engine *gin.Engine) {
 	agentGroup := prefix.Group("pcdn/agent")
 	agentGroup.Use(pcdnMiddleware.AgentTokenAuth())
 	router.RouterGroupApp.AgentRouter.InitAgentRouter(agentGroup)
+
+	// portal 组：个人门户（public 公开注册/登录；private 个人 JWT，查自己的节点/流量）
+	publicPortal := prefix.Group("pcdn/portal")
+	privatePortal := prefix.Group("pcdn/portal")
+	privatePortal.Use(middleware.JWTAuth())
+	router.RouterGroupApp.PortalRouter.InitPortalRouter(publicPortal, privatePortal)
 }

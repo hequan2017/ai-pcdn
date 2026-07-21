@@ -8,6 +8,7 @@ import (
 type ApiGroup struct {
 	NodeApi
 	AgentApi
+	PortalApi
 }
 
 // ApiGroupApp 全局 API 组实例，供 router 层引用
@@ -18,4 +19,5 @@ var (
 	nodeService    = pcdnService.ServiceGroupApp.NodeService
 	trafficService = pcdnService.ServiceGroupApp.TrafficService
 	agentService   = pcdnService.ServiceGroupApp.AgentService
+	portalService  = pcdnService.ServiceGroupApp.PortalService
 )

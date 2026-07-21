@@ -6,6 +6,7 @@ import "github.com/flipped-aurora/gin-vue-admin/server/plugin/pcdn/api"
 type RouterGroup struct {
 	NodeRouter
 	AgentRouter
+	PortalRouter
 }
 
 // RouterGroupApp 全局路由组实例，供 initialize 层引用
@@ -13,6 +14,7 @@ var RouterGroupApp = new(RouterGroup)
 
 // 业务 api 引用
 var (
-	nodeApi  = api.ApiGroupApp.NodeApi
-	agentApi = api.ApiGroupApp.AgentApi
+	nodeApi   = api.ApiGroupApp.NodeApi
+	agentApi  = api.ApiGroupApp.AgentApi
+	portalApi = api.ApiGroupApp.PortalApi
 )
