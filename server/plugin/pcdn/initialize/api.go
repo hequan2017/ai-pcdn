@@ -20,6 +20,13 @@ func Api(ctx context.Context) {
 		{Path: "/pcdn/admin/node/deleteByIds", Description: "批量删除节点", ApiGroup: apiGroupPcdnNode, Method: "DELETE"},
 		{Path: "/pcdn/admin/node/traffic", Description: "查询节点流量", ApiGroup: apiGroupPcdnNode, Method: "GET"},
 		{Path: "/pcdn/admin/node/n95", Description: "查询节点95值", ApiGroup: apiGroupPcdnNode, Method: "GET"},
+		{Path: "/pcdn/admin/alarm/rule/list", Description: "告警规则列表", ApiGroup: "PCDN告警", Method: "GET"},
+		{Path: "/pcdn/admin/alarm/rule/find", Description: "查询告警规则", ApiGroup: "PCDN告警", Method: "GET"},
+		{Path: "/pcdn/admin/alarm/rule/create", Description: "创建告警规则", ApiGroup: "PCDN告警", Method: "POST"},
+		{Path: "/pcdn/admin/alarm/rule/update", Description: "更新告警规则", ApiGroup: "PCDN告警", Method: "PUT"},
+		{Path: "/pcdn/admin/alarm/rule/delete", Description: "删除告警规则", ApiGroup: "PCDN告警", Method: "DELETE"},
+		{Path: "/pcdn/admin/alarm/rule/deleteByIds", Description: "批量删除告警规则", ApiGroup: "PCDN告警", Method: "DELETE"},
+		{Path: "/pcdn/admin/alarm/record/list", Description: "告警记录列表", ApiGroup: "PCDN告警", Method: "GET"},
 	}
 	utils.RegisterApis(entities...)
 }

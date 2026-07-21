@@ -7,6 +7,9 @@ type ServiceGroup struct {
 	AgentService
 	PortalService
 	Node95Service
+	AlarmRuleService
+	AlarmRecordService
+	AlarmEngineService
 }
 
 // ServiceGroupApp 全局服务组实例，供 api 层引用

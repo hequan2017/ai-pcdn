@@ -7,6 +7,7 @@ type RouterGroup struct {
 	NodeRouter
 	AgentRouter
 	PortalRouter
+	AlarmRouter
 }
 
 // RouterGroupApp 全局路由组实例，供 initialize 层引用
@@ -17,4 +18,5 @@ var (
 	nodeApi   = api.ApiGroupApp.NodeApi
 	agentApi  = api.ApiGroupApp.AgentApi
 	portalApi = api.ApiGroupApp.PortalApi
+	alarmApi  = api.ApiGroupApp.AlarmApi
 )

@@ -22,6 +22,7 @@ func Router(engine *gin.Engine) {
 		Use(middleware.CasbinHandler()).
 		Use(middleware.DataScope())
 	router.RouterGroupApp.NodeRouter.InitNodeRouter(adminGroup)
+	router.RouterGroupApp.AlarmRouter.InitAlarmRouter(adminGroup)
 
 	// agent 组：采集 agent 上报，node token 鉴权
 	agentGroup := prefix.Group("pcdn/agent")

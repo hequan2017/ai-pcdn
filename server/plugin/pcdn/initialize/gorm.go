@@ -17,6 +17,8 @@ func Gorm(ctx context.Context) {
 		new(model.PcdnNodeIface),
 		new(model.PcdnNodeTrafficPoint),
 		new(model.PcdnNode95),
+		new(model.PcdnAlarmRule),
+		new(model.PcdnAlarmRecord),
 	)
 	if err != nil {
 		err = errors.Wrap(err, "PCDN注册表失败!")
