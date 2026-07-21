@@ -25,6 +25,7 @@ func main() {
 		ifaces   = flag.String("ifaces", "", "采集网卡(逗号分隔,空=所有非lo)")
 		interval = flag.Int("interval", 60, "采集与上报间隔(秒)")
 		storePath = flag.String("store", "/var/lib/pcdn-agent/pending.jsonl", "本地持久化路径")
+		version   = flag.String("version", "dev", "当前agent版本")
 	)
 	flag.Parse()
 	if *sn == "" || *token == "" {
@@ -45,6 +46,7 @@ func main() {
 	go reporterLoop(reporter, store, dur)
 	go retryLoop(reporter, store, dur*2) // 独立重试任务，与即时上报解耦
 	go heartbeatLoop(reporter, 30*time.Second)
+	go upgradeLoop(reporter, *version)
 
 	log.Printf("pcdn-agent 已启动 sn=%s server=%s ifaces=%v", *sn, *server, *ifaces)
 	sig := make(chan os.Signal, 1)

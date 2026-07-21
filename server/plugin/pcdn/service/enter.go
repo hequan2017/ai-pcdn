@@ -13,6 +13,7 @@ type ServiceGroup struct {
 	BillService
 	SettlementService
 	ProfitService
+	ReleaseService
 }
 
 // ServiceGroupApp 全局服务组实例，供 api 层引用

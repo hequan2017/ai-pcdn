@@ -21,6 +21,7 @@ func Gorm(ctx context.Context) {
 		new(model.PcdnAlarmRecord),
 		new(model.PcdnBill),
 		new(model.PcdnSettlement),
+		new(model.PcdnAgentRelease),
 	)
 	if err != nil {
 		err = errors.Wrap(err, "PCDN注册表失败!")

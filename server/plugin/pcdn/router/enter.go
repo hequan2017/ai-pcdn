@@ -11,6 +11,7 @@ type RouterGroup struct {
 	BillRouter
 	SettlementRouter
 	ProfitRouter
+	ReleaseRouter
 }
 
 // RouterGroupApp 全局路由组实例，供 initialize 层引用
@@ -25,4 +26,5 @@ var (
 	billApi   = api.ApiGroupApp.BillApi
 	settlementApi = api.ApiGroupApp.SettlementApi
 	profitApi     = api.ApiGroupApp.ProfitApi
+	releaseApi    = api.ApiGroupApp.ReleaseApi
 )

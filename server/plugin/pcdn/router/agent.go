@@ -10,4 +10,5 @@ func (r *AgentRouter) InitAgentRouter(group *gin.RouterGroup) {
 	group.POST("activate", agentApi.Activate)
 	group.POST("report", agentApi.Report)
 	group.POST("heartbeat", agentApi.Heartbeat)
+	group.GET("version", agentApi.Version)
 }

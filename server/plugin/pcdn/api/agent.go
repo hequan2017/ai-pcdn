@@ -75,3 +75,24 @@ func (a *AgentApi) Heartbeat(c *gin.Context) {
 	}
 	response.OkWithMessage("ok", c)
 }
+
+// Version 查询最新 agent 版本（agent 自升级用）
+// @Tags PcdnAgent
+// @Summary 查询最新版本
+// @Produce application/json
+// @Success 200 {object} response.Response{data=object,msg=string} "ok"
+// @Router /pcdn/agent/version [get]
+func (a *AgentApi) Version(c *gin.Context) {
+	r, err := releaseService.GetLatest(c.Request.Context())
+	if err != nil {
+		response.OkWithDetailed(gin.H{"latest": false}, "ok", c)
+		return
+	}
+	response.OkWithDetailed(gin.H{
+		"latest":      true,
+		"version":     r.Version,
+		"downloadUrl": r.DownloadURL,
+		"checksum":    r.Checksum,
+		"force":       r.Force,
+	}, "ok", c)
+}

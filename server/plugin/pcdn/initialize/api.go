@@ -42,6 +42,11 @@ func Api(ctx context.Context) {
 		{Path: "/pcdn/admin/profit/revenueByPlatform", Description: "按平台收入", ApiGroup: "PCDN利润", Method: "GET"},
 		{Path: "/pcdn/admin/profit/costByOwner", Description: "按贡献者成本", ApiGroup: "PCDN利润", Method: "GET"},
 		{Path: "/pcdn/admin/profit/trend", Description: "利润趋势", ApiGroup: "PCDN利润", Method: "GET"},
+		{Path: "/pcdn/admin/release/list", Description: "版本列表", ApiGroup: "PCDN版本", Method: "GET"},
+		{Path: "/pcdn/admin/release/find", Description: "查询版本", ApiGroup: "PCDN版本", Method: "GET"},
+		{Path: "/pcdn/admin/release/create", Description: "发布版本", ApiGroup: "PCDN版本", Method: "POST"},
+		{Path: "/pcdn/admin/release/update", Description: "更新版本", ApiGroup: "PCDN版本", Method: "PUT"},
+		{Path: "/pcdn/admin/release/delete", Description: "删除版本", ApiGroup: "PCDN版本", Method: "DELETE"},
 	}
 	utils.RegisterApis(entities...)
 }

@@ -17,6 +17,7 @@ func Menu(ctx context.Context) {
 		{Path: "pcdnBill", Name: "pcdnBill", Component: "plugin/pcdn/view/bill/index.vue", Sort: 4, Meta: model.Meta{Title: "采购账单", Icon: "money"}},
 		{Path: "pcdnSettlement", Name: "pcdnSettlement", Component: "plugin/pcdn/view/settlement/index.vue", Sort: 5, Meta: model.Meta{Title: "销售对账", Icon: "coin"}},
 		{Path: "pcdnProfit", Name: "pcdnProfit", Component: "plugin/pcdn/view/profit/index.vue", Sort: 6, Meta: model.Meta{Title: "利润大盘", Icon: "data-line"}},
+		{Path: "pcdnRelease", Name: "pcdnRelease", Component: "plugin/pcdn/view/release/index.vue", Sort: 7, Meta: model.Meta{Title: "Agent版本", Icon: "upload"}},
 	}
 	utils.RegisterMenus(entities...)
 }

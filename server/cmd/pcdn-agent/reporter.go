@@ -118,6 +118,30 @@ func (r *Reporter) Heartbeat(h HostInfo) error {
 	return r.post("/pcdn/agent/heartbeat", HeartbeatReq{Hostname: h.Hostname, OS: h.OS})
 }
 
+// GetVersion 查询最新版本（agent 自升级）
+func (r *Reporter) GetVersion() (*VersionInfo, error) {
+	req, err := http.NewRequest(http.MethodGet, r.server+"/pcdn/agent/version", nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("X-Node-Sn", r.sn)
+	req.Header.Set("X-Node-Token", r.token)
+	resp, err := r.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	var res struct {
+		Code int         `json:"code"`
+		Data VersionInfo `json:"data"`
+	}
+	_ = json.NewDecoder(resp.Body).Decode(&res)
+	if res.Code != 0 {
+		return nil, fmt.Errorf("version query failed")
+	}
+	return &res.Data, nil
+}
+
 // ReportPending 读 pending 全量上报，成功后清空（加锁串行化）
 func (r *Reporter) ReportPending(s *Store) error {
 	r.mu.Lock()

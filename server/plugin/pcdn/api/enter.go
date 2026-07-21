@@ -13,6 +13,7 @@ type ApiGroup struct {
 	BillApi
 	SettlementApi
 	ProfitApi
+	ReleaseApi
 }
 
 // ApiGroupApp 全局 API 组实例，供 router 层引用
@@ -30,4 +31,5 @@ var (
 	billService        = pcdnService.ServiceGroupApp.BillService
 	settlementService  = pcdnService.ServiceGroupApp.SettlementService
 	profitService      = pcdnService.ServiceGroupApp.ProfitService
+	releaseService     = pcdnService.ServiceGroupApp.ReleaseService
 )
