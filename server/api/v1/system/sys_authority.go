@@ -1,0 +1,279 @@
+package system
+
+import (
+	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
+	systemReq "github.com/flipped-aurora/gin-vue-admin/server/model/system/request"
+	systemRes "github.com/flipped-aurora/gin-vue-admin/server/model/system/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils/logger"
+
+	"github.com/gin-gonic/gin"
+)
+
+type AuthorityApi struct{}
+
+// CreateAuthority
+// @Tags      Authority
+// @Summary   创建角色
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      system.SysAuthority                                                true  "权限id, 权限名, 父角色id"
+// @Success   200   {object}  response.Response{data=systemRes.SysAuthorityResponse,msg=string}  "创建角色,返回包括系统角色详情"
+// @Router    /authority/createAuthority [post]
+func (a *AuthorityApi) CreateAuthority(c *gin.Context) {
+	var authority, authBack system.SysAuthority
+	var err error
+
+	if err = c.ShouldBindJSON(&authority); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	if err = utils.Verify(authority, utils.AuthorityVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	if *authority.ParentId == 0 && global.GVA_CONFIG.System.UseStrictAuth {
+		authority.ParentId = utils.Pointer(utils.GetUserAuthorityId(c))
+	}
+
+	if authBack, err = authorityService.CreateAuthority(c.Request.Context(), authority); err != nil {
+		logger.WithCtx(c.Request.Context()).Mod("biz").Err(err).Error("创建失败!")
+		response.FailWithMessage("创建失败"+err.Error(), c)
+		return
+	}
+	err = casbinService.FreshCasbin()
+	if err != nil {
+		logger.WithCtx(c.Request.Context()).Mod("biz").Err(err).Error("创建成功，权限刷新失败。")
+		response.FailWithMessage("创建成功，权限刷新失败。"+err.Error(), c)
+		return
+	}
+	response.OkWithDetailed(systemRes.SysAuthorityResponse{Authority: authBack}, "创建成功", c)
+}
+
+// CopyAuthority
+// @Tags      Authority
+// @Summary   拷贝角色
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      response.SysAuthorityCopyResponse                                  true  "旧角色id, 新权限id, 新权限名, 新父角色id"
+// @Success   200   {object}  response.Response{data=systemRes.SysAuthorityResponse,msg=string}  "拷贝角色,返回包括系统角色详情"
+// @Router    /authority/copyAuthority [post]
+func (a *AuthorityApi) CopyAuthority(c *gin.Context) {
+	var copyInfo systemRes.SysAuthorityCopyResponse
+	err := c.ShouldBindJSON(&copyInfo)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	err = utils.Verify(copyInfo, utils.OldAuthorityVerify)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	err = utils.Verify(copyInfo.Authority, utils.AuthorityVerify)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	adminAuthorityID := utils.GetUserAuthorityId(c)
+	authBack, err := authorityService.CopyAuthority(c.Request.Context(), adminAuthorityID, copyInfo)
+	if err != nil {
+		logger.WithCtx(c.Request.Context()).Mod("biz").Err(err).Error("拷贝失败!")
+		response.FailWithMessage("拷贝失败"+err.Error(), c)
+		return
+	}
+	response.OkWithDetailed(systemRes.SysAuthorityResponse{Authority: authBack}, "拷贝成功", c)
+}
+
+// DeleteAuthority
+// @Tags      Authority
+// @Summary   删除角色
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      system.SysAuthority            true  "删除角色"
+// @Success   200   {object}  response.Response{msg=string}  "删除角色"
+// @Router    /authority/deleteAuthority [post]
+func (a *AuthorityApi) DeleteAuthority(c *gin.Context) {
+	var authority system.SysAuthority
+	var err error
+	if err = c.ShouldBindJSON(&authority); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err = utils.Verify(authority, utils.AuthorityIdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	// 删除角色之前需要判断是否有用户正在使用此角色
+	if err = authorityService.DeleteAuthority(c.Request.Context(), &authority); err != nil {
+		logger.WithCtx(c.Request.Context()).Mod("biz").Err(err).Error("删除失败!")
+		response.FailWithMessage("删除失败"+err.Error(), c)
+		return
+	}
+	_ = casbinService.FreshCasbin()
+	response.OkWithMessage("删除成功", c)
+}
+
+// UpdateAuthority
+// @Tags      Authority
+// @Summary   更新角色信息
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      system.SysAuthority                                                true  "权限id, 权限名, 父角色id"
+// @Success   200   {object}  response.Response{data=systemRes.SysAuthorityResponse,msg=string}  "更新角色信息,返回包括系统角色详情"
+// @Router    /authority/updateAuthority [put]
+func (a *AuthorityApi) UpdateAuthority(c *gin.Context) {
+	var auth system.SysAuthority
+	err := c.ShouldBindJSON(&auth)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	err = utils.Verify(auth, utils.AuthorityVerify)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	authority, err := authorityService.UpdateAuthority(c.Request.Context(), auth)
+	if err != nil {
+		logger.WithCtx(c.Request.Context()).Mod("biz").Err(err).Error("更新失败!")
+		response.FailWithMessage("更新失败"+err.Error(), c)
+		return
+	}
+	response.OkWithDetailed(systemRes.SysAuthorityResponse{Authority: authority}, "更新成功", c)
+}
+
+// GetAuthorityList
+// @Tags      Authority
+// @Summary   分页获取角色列表
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      request.PageInfo                                        true  "页码, 每页大小"
+// @Success   200   {object}  response.Response{data=response.PageResult,msg=string}  "分页获取角色列表,返回包括列表,总数,页码,每页数量"
+// @Router    /authority/getAuthorityList [post]
+func (a *AuthorityApi) GetAuthorityList(c *gin.Context) {
+	authorityID := utils.GetUserAuthorityId(c)
+	list, err := authorityService.GetAuthorityInfoList(c.Request.Context(), authorityID)
+	if err != nil {
+		logger.WithCtx(c.Request.Context()).Mod("biz").Err(err).Error("获取失败!")
+		response.FailWithMessage("获取失败"+err.Error(), c)
+		return
+	}
+	response.OkWithDetailed(list, "获取成功", c)
+}
+
+// SetDataScope
+// @Tags      Authority
+// @Summary   设置角色数据范围(数据权限)
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      systemReq.SetDataScope         true  "角色ID, 数据范围"
+// @Success   200   {object}  response.Response{msg=string}  "设置角色数据范围"
+// @Router    /authority/setDataScope [post]
+func (a *AuthorityApi) SetDataScope(c *gin.Context) {
+	var req systemReq.SetDataScope
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if req.AuthorityId == 0 {
+		response.FailWithMessage("角色ID不能为空", c)
+		return
+	}
+	if err := authorityService.SetDataScope(c.Request.Context(), req.AuthorityId, req.DataScope, req.DeptIds); err != nil {
+		logger.WithCtx(c.Request.Context()).Mod("biz").Err(err).Error("设置失败!")
+		response.FailWithMessage("设置失败"+err.Error(), c)
+		return
+	}
+	response.OkWithMessage("设置成功", c)
+}
+
+// GetDataScopeDepts
+// @Tags      Authority
+// @Summary   获取角色自定义部门集(数据权限第5档)
+// @Security  ApiKeyAuth
+// @Produce   application/json
+// @Param     authorityId  query     uint                                       true  "角色ID"
+// @Success   200          {object}  response.Response{data=[]uint,msg=string}  "获取成功"
+// @Router    /authority/getDataScopeDepts [get]
+func (a *AuthorityApi) GetDataScopeDepts(c *gin.Context) {
+	var req systemReq.SetDataScope
+	if err := c.ShouldBindQuery(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	ids, err := authorityService.GetDataScopeDepts(c.Request.Context(), req.AuthorityId)
+	if err != nil {
+		logger.WithCtx(c.Request.Context()).Mod("biz").Err(err).Error("获取失败!")
+		response.FailWithMessage("获取失败"+err.Error(), c)
+		return
+	}
+	if ids == nil {
+		ids = []uint{}
+	}
+	response.OkWithDetailed(ids, "获取成功", c)
+}
+
+// GetUsersByAuthority
+// @Tags      Authority
+// @Summary   获取拥有指定角色的用户ID列表
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     authorityId  query     uint                                                        true  "角色ID"
+// @Success   200          {object}  response.Response{data=[]uint,msg=string}                   "获取成功"
+// @Router    /authority/getUsersByAuthority [get]
+func (a *AuthorityApi) GetUsersByAuthority(c *gin.Context) {
+	var req systemReq.SetRoleUsers
+	if err := c.ShouldBindQuery(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	userIds, err := authorityService.GetUserIdsByAuthorityId(c.Request.Context(), req.AuthorityId)
+	if err != nil {
+		logger.WithCtx(c.Request.Context()).Mod("biz").Err(err).Error("获取失败!")
+		response.FailWithMessage("获取失败"+err.Error(), c)
+		return
+	}
+	if userIds == nil {
+		userIds = []uint{}
+	}
+	response.OkWithDetailed(userIds, "获取成功", c)
+}
+
+// SetRoleUsers
+// @Tags      Authority
+// @Summary   全量覆盖某角色关联的用户列表
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Param     data  body      systemReq.SetRoleUsers         true  "角色ID和用户ID列表"
+// @Success   200   {object}  response.Response{msg=string}  "设置成功"
+// @Router    /authority/setRoleUsers [post]
+func (a *AuthorityApi) SetRoleUsers(c *gin.Context) {
+	var req systemReq.SetRoleUsers
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if req.AuthorityId == 0 {
+		response.FailWithMessage("角色ID不能为空", c)
+		return
+	}
+	if err := authorityService.SetRoleUsers(c.Request.Context(), req.AuthorityId, req.UserIds); err != nil {
+		logger.WithCtx(c.Request.Context()).Mod("biz").Err(err).Error("设置失败!")
+		response.FailWithMessage("设置失败"+err.Error(), c)
+		return
+	}
+	response.OkWithMessage("设置成功", c)
+}

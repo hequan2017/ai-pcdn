@@ -1,0 +1,143 @@
+@use '@/style/main.scss';
+@use '@/style/reset';
+
+
+.el-button {
+  @apply font-normal;
+  border-radius: var(--gva-radius, 2px);
+}
+
+.gva-pagination {
+  @apply flex justify-end;
+  .el-pagination__editor {
+    .el-input__inner {
+      @apply h-8;
+    }
+  }
+
+  .is-active {
+    @apply bg-primary;
+    border-radius: var(--gva-radius, 2px);
+    color: #ffffff !important;
+  }
+}
+
+.el-drawer__header {
+  margin-bottom: 0 !important;
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+  @apply border-0 border-b border-solid border-border;
+}
+
+.el-form--inline {
+  .el-form-item {
+    & > .el-input,
+    .el-cascader,
+    .el-select,
+    .el-date-editor,
+    .el-autocomplete {
+      @apply w-52;
+    }
+  }
+}
+
+.el-dropdown {
+  @apply overflow-hidden;
+}
+
+.el-table {
+  tr {
+    th {
+      @apply dark:bg-container;
+      .cell {
+        @apply leading-[36px] text-gray-700 dark:text-gray-200;
+      }
+    }
+  }
+  .el-table__row {
+    td {
+      @apply dark:bg-container;
+      .cell {
+        @apply leading-[32px] text-gray-600 dark:text-gray-300;
+      }
+    }
+  }
+  tr {
+    th {
+      &.is-leaf {
+        @apply dark:bg-container;
+      }
+    }
+  }
+}
+
+//   layout
+
+// table
+.el-pagination {
+  @apply mt-8;
+  .btn-prev,
+  .btn-next {
+    @apply border border-solid border-border;
+    border-radius: var(--gva-radius, 2px);
+  }
+  .el-pager {
+    li {
+      @apply border border-solid border-border text-gray-600 text-sm mx-1;
+      border-radius: var(--gva-radius, 2px);
+    }
+  }
+}
+.el-menu {
+  background-color: transparent !important;
+  li {
+    @apply my-1;
+  }
+}
+.el-menu--vertical {
+  /* 叶子菜单项与子菜单标题共用全局圆角，保证一级/二级菜单 hover、选中背景圆角一致 */
+  .el-menu-item,
+  .el-sub-menu__title {
+    border-radius: var(--gva-radius, 2px);
+  }
+  .el-menu-item.is-active {
+    background-color: var(--gva-menu-active-bg, var(--el-color-primary)) !important;
+    color: var(--gva-menu-active-text, #fff) !important;
+  }
+}
+
+.el-sub-menu.el-sub-menu__hide-arrow {
+  @apply h-11;
+}
+
+.el-tabs__header {
+  margin: 0 0 1px !important;
+}
+
+.el-sub-menu.is-active {
+  > .el-sub-menu__title {
+    /* 插值输出，确保保留 !important（本版 transformer 会吞掉 @apply 尾部的 !important） */
+    color: #{'rgb(var(--primary-color))'} !important;
+  }
+}
+
+.el-menu-item.is-active {
+  color: #{'rgb(var(--primary-color))'} !important;
+}
+
+.el-sub-menu__title.el-tooltip__trigger,
+.el-menu-item .el-menu-tooltip__trigger {
+  @apply justify-center;
+}
+
+.el-menu--horizontal .el-menu .el-sub-menu__title {
+  @apply justify-start;
+}
+
+html.dark {
+  /* Element Plus 自有深色变量，待移除 EP 后统一清理 */
+  --el-bg-color: rgb(30, 41, 59);
+  --el-bg-color-overlay: rgb(40, 51, 69);
+  --el-fill-color-light: rgb(15, 23, 42);
+  --el-fill-color: rgb(15, 23, 42);
+}

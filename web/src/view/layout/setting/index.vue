@@ -1,0 +1,222 @@
+<template>
+  <el-drawer
+    v-model="drawer"
+    direction="rtl"
+    :size="width"
+    append-to-body
+    :show-close="false"
+    class="gva-theme-drawer"
+  >
+    <template #header>
+      <div class="flex items-center justify-between">
+        <span class="text-base">系统配置</span>
+        <div class="flex items-center gap-2">
+          <g-button
+            size="sm"
+            class="rounded-lg font-medium hover:-translate-y-0.5"
+            @click="resetConfig"
+          >
+            重置配置
+          </g-button>
+          <g-button
+            variant="ghost"
+            size="icon"
+            class="rounded-full"
+            aria-label="关闭系统配置"
+            @click="closeDrawer"
+          >
+            <svg-icon local-icon="close" class="h-3.5 w-3.5" />
+          </g-button>
+        </div>
+      </div>
+    </template>
+
+    <div class="bg-container px-5">
+      <div class="pt-3 pb-4">
+        <div class="flex justify-center">
+          <div class="inline-flex bg-muted rounded-lg p-1 gap-0.5">
+            <div
+              v-for="tab in tabs"
+              :key="tab.key"
+              class="px-4 py-1.5 text-[13px] text-center cursor-pointer font-medium rounded-md transition-colors duration-150 ease-in-out min-w-[60px]"
+              :class="[
+                activeTab === tab.key
+                  ? 'text-white shadow-sm'
+                  : 'text-muted-foreground hover:text-base-text'
+              ]"
+              :style="activeTab === tab.key ? { backgroundColor: settings.themeColor } : {}"
+              @click="activeTab = tab.key"
+            >
+              {{ tab.label }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pb-8 h-full overflow-y-auto">
+        <div class="transition-all duration-300 ease-in-out">
+          <AppearanceSettings v-if="activeTab === 'appearance'" />
+          <LayoutSettings v-else-if="activeTab === 'layout'" />
+          <PresetSettings v-else-if="activeTab === 'presets'" />
+          <GeneralSettings v-else-if="activeTab === 'general'" />
+        </div>
+      </div>
+    </div>
+  </el-drawer>
+</template>
+
+<script setup>
+  import { ref, computed } from 'vue'
+  import { storeToRefs } from 'pinia'
+  import { useAppStore, useThemeStore } from '@/pinia'
+  import AppearanceSettings from './modules/appearance/index.vue'
+  import LayoutSettings from './modules/layout/index.vue'
+  import PresetSettings from './modules/presets/index.vue'
+  import GeneralSettings from './modules/general/index.vue'
+
+  defineOptions({
+    name: 'GvaSetting'
+  })
+
+  const appStore = useAppStore()
+  const themeStore = useThemeStore()
+  const { device } = storeToRefs(appStore)
+  const { settings } = storeToRefs(themeStore)
+
+  const activeTab = ref('appearance')
+
+  const tabs = [
+    { key: 'appearance', label: '外观' },
+    { key: 'layout', label: '布局' },
+    { key: 'presets', label: '预设' },
+    { key: 'general', label: '通用' }
+  ]
+
+  const width = computed(() => {
+    return device.value === 'mobile' ? '100%' : '440px'
+  })
+
+  const drawer = defineModel('drawer', {
+    default: true,
+    type: Boolean
+  })
+
+  const resetConfig = () => {
+    themeStore.resetConfig()
+  }
+
+  const closeDrawer = () => {
+    drawer.value = false
+  }
+</script>
+
+<style lang="scss">
+.gva-theme-drawer {
+  .el-drawer {
+    @apply bg-container;
+  }
+
+  .el-drawer__body {
+    @apply p-0;
+  }
+}
+
+.gva-theme-font {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.gva-theme-card-bg {
+  @apply bg-layout border border-border rounded-lg px-3.5 py-0.5;
+}
+
+.gva-theme-card-white {
+  @apply bg-container border border-border rounded-lg px-3 py-2.5 transition-colors duration-150;
+}
+
+.gva-theme-section-header {
+  @apply flex items-center mb-2 mt-0.5;
+}
+
+.gva-theme-section-title {
+  @apply text-xs font-semibold tracking-wide text-muted-foreground;
+}
+
+.gva-theme-divider {
+  @apply hidden;
+}
+
+.gva-theme-text-main {
+  @apply text-base-text;
+}
+
+.gva-theme-text-sub {
+  @apply text-muted-foreground;
+}
+
+.gva-theme-section-content {
+  animation: fadeInUp 0.3s ease;
+}
+
+.gva-theme-setting-item {
+  @apply flex items-center justify-between py-2.5 gva-theme-font border-0 border-b border-solid border-border last:border-b-0;
+}
+
+.gva-theme-setting-label {
+  @apply text-[13px] font-medium gva-theme-text-main;
+}
+
+.gva-theme-mode-selector {
+  @apply inline-flex bg-layout border border-border rounded-lg p-1 gap-1;
+}
+
+.gva-theme-mode-item {
+  @apply flex flex-col items-center justify-center px-3 py-2 rounded-md cursor-pointer transition-all duration-150 ease-in-out min-w-[64px];
+}
+
+.gva-theme-layout-card {
+  @apply bg-container border border-border rounded-lg p-2 cursor-pointer transition-colors duration-150 ease-in-out hover:border-primary;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom scrollbar for webkit browsers */
+.gva-theme-drawer ::-webkit-scrollbar {
+  width: 6px;
+}
+
+.gva-theme-drawer ::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 3px;
+}
+
+.gva-theme-drawer ::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+
+  &:hover {
+    background: #9ca3af;
+  }
+}
+
+.dark .gva-theme-drawer ::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+.dark .gva-theme-drawer ::-webkit-scrollbar-thumb {
+  background: #4b5563;
+
+  &:hover {
+    background: #6b7280;
+  }
+}
+</style>

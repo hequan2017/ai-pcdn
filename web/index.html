@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-cn" class="transition-colors">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <meta
+      content="Gin,Vue,Admin.Gin-Vue-Admin,GVA,gin-vue-admin,后台管理框架,vue后台管理框架,gin-vue-admin文档,gin-vue-admin首页,gin-vue-admin"
+      name="keywords"
+    />
+    <link rel="icon" href="/favicon.ico" />
+    <title></title>
+    <script>
+      ;(() => {
+        try {
+          // 必须与 THEME_SETTINGS_VERSION 保持一致：首屏防闪脚本无法 import 常量，
+          // 缓存形态为版本信封 { version, settings }，版本不匹配时与 store 一样回落默认。
+          const VERSION = 1
+          const raw = localStorage.getItem('gva-theme-settings')
+          const parsed = raw ? JSON.parse(raw) : null
+          const settings =
+            parsed && parsed.version === VERSION && parsed.settings ? parsed.settings : null
+          const scheme = settings && settings.themeScheme ? settings.themeScheme : 'auto'
+          const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isDark = scheme === 'dark' || (scheme === 'auto' && prefersDark)
+          const root = document.documentElement
+          root.classList.toggle('dark', isDark)
+          root.classList.toggle('light', !isDark)
+          if (settings && settings.themeColor) root.style.setProperty('--64f90c3645474bd5', settings.themeColor)
+        } catch {}
+      })()
+    </script>
+    <style>
+      :root {
+        --64f90c3645474bd5: #2264f2;
+        /* 首屏 loading 背景/文字：默认浅色，与 App 的 bg-gray-50 对齐 */
+        --gva-loading-bg: #f9fafb;
+        --gva-loading-text: #6b7280;
+      }
+      /* 暗黑下与 App 的 dark:bg-slate-800 对齐，避免首屏 loading 白屏闪烁
+         （class 由 head 内联 bootstrap 脚本在首次绘制前写入） */
+      html.dark {
+        --gva-loading-bg: #1e293b;
+        --gva-loading-text: #94a3b8;
+      }
+      html,
+      body {
+        background-color: var(--gva-loading-bg);
+      }
+      .transition-colors {
+        transition-property: color, background-color, border-color,
+          text-decoration-color, fill, stroke;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 150ms;
+      }
+      body {
+        margin: 0;
+      }
+      #gva-loading-box {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        width: 100vw;
+        background-color: var(--gva-loading-bg);
+      }
+      #loading-text {
+        position: absolute;
+        bottom: calc(50% - 100px);
+        left: 0;
+        width: 100%;
+        text-align: center;
+        color: var(--gva-loading-text);
+        font-size: 14px;
+      }
+      #loading {
+        position: absolute;
+        top: calc(50% - 20px);
+        left: calc(50% - 20px);
+      }
+      @keyframes loader {
+        0% {
+          left: -100px;
+        }
+        100% {
+          left: 110%;
+        }
+      }
+      #box {
+        width: 50px;
+        height: 50px;
+        background: var(--64f90c3645474bd5);
+        animation: animate 0.5s linear infinite;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 3px;
+      }
+      @keyframes animate {
+        17% {
+          border-bottom-right-radius: 3px;
+        }
+        25% {
+          transform: translateY(9px) rotate(22.5deg);
+        }
+        50% {
+          transform: translateY(18px) scale(1, 0.9) rotate(45deg);
+          border-bottom-right-radius: 40px;
+        }
+        75% {
+          transform: translateY(9px) rotate(67.5deg);
+        }
+        100% {
+          transform: translateY(0) rotate(90deg);
+        }
+      }
+      #shadow {
+        width: 50px;
+        height: 5px;
+        background: #000;
+        opacity: 0.1;
+        position: absolute;
+        top: 59px;
+        left: 0;
+        border-radius: 50%;
+        animation: shadow 0.5s linear infinite;
+      }
+      .dark #shadow {
+        background: #fff;
+      }
+      @keyframes shadow {
+        50% {
+          transform: scale(1.2, 1);
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="gva-loading-box">
+      <div id="loading">
+        <div id="shadow"></div>
+        <div id="box"></div>
+      </div>
+      <div id="loading-text">系统正在加载中，请稍候...</div>
+    </div>
+    <div id="app"></div>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
