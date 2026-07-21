@@ -105,5 +105,9 @@
   "/src/plugin/email/view/index.vue": "Email",
   "/src/plugin/pcdn/view/alarm/record.vue": "PcdnAlarmRecord",
   "/src/plugin/pcdn/view/alarm/rule.vue": "PcdnAlarmRule",
-  "/src/plugin/pcdn/view/node/index.vue": "PcdnNode"
+  "/src/plugin/pcdn/view/bill/index.vue": "PcdnBill",
+  "/src/plugin/pcdn/view/node/index.vue": "PcdnNode",
+  "/src/plugin/pcdn/view/profit/index.vue": "PcdnProfit",
+  "/src/plugin/pcdn/view/release/index.vue": "PcdnRelease",
+  "/src/plugin/pcdn/view/settlement/index.vue": "PcdnSettlement"
 }

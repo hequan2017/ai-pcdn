@@ -32,7 +32,7 @@ ai-pcdn 是基于 Go、Gin、Vue 3 和 Vite 构建的 PCDN（P2P CDN）节点供
 | 流量与 95 值 | 流量点幂等写入，支持日滚动 95 值和月冻结 95 值 |
 | 定时任务 | 节点离线判定、日 95 值滚动计算和月 95 值冻结 |
 | 运营后台 | 节点管理、流量曲线和 95 值查看 |
-| 个人门户 | 注册、登录、自助添加节点、生成凭证和安装命令、查看节点及流量 |
+| 个人门户 | 注册、登录、自助添加节点、生成凭证和安装命令、查看节点、流量及账单 |
 
 ### 监控告警
 
@@ -93,15 +93,15 @@ ai-pcdn 是基于 Go、Gin、Vue 3 和 Vite 构建的 PCDN（P2P CDN）节点供
 ai-pcdn/
 ├── server/
 │   ├── plugin/pcdn/             # PCDN 后端核心业务
-│   │   ├── model/               # 节点、流量、95 值、告警模型
-│   │   ├── service/             # 业务服务、告警引擎、95 值和通知
+│   │   ├── model/               # 节点、流量、95 值、告警、账单、结算、版本模型
+│   │   ├── service/             # 业务服务、告警引擎、95 值、账单、对账、利润和通知
 │   │   ├── api/                 # admin、agent、portal 接口
 │   │   ├── router/              # 三组业务路由
 │   │   ├── middleware/          # Agent Token 鉴权
-│   │   └── initialize/          # 建表、菜单、权限、路由和定时任务
-│   └── cmd/pcdn-agent/          # 独立采集 Agent
+│   │   └── initialize/          # 建表、菜单、API 权限点、Casbin/菜单授权、路由和定时任务
+│   └── cmd/pcdn-agent/          # 独立采集 Agent（含 OTA 自升级）
 ├── web/                         # ai-pcdn 运营后台
-│   └── src/plugin/pcdn/         # 节点与告警管理页面
+│   └── src/plugin/pcdn/         # 节点、告警、账单、对账、利润和版本管理页面
 ├── site/                        # 独立个人门户
 ├── deploy/docker-compose/       # Docker Compose 配置
 ├── docs/superpowers/specs/      # 设计文档
@@ -286,6 +286,7 @@ go build -o pcdn-agent ./cmd/pcdn-agent/
 - **95 值**：按周期内分钟峰值排序，去除最高 5% 后取最大值；支持日滚动和月冻结。
 - **数据隔离**：个人门户按 `owner_user_id` 限制节点和流量访问范围。
 - **告警收敛**：同规则和节点在 firing 期间只通知一次，恢复时再通知一次。
+- **插件自动授权**：pcdn 菜单与 API 在初始化时自动授权给超级管理员(888)，增量写入 `sys_authority_menus` 与 `casbin_rule` 并刷新 Casbin enforcer；不使用破坏性的 `SetMenuAuthority`/`UpdateCasbin`（会清空 admin 已有权限）。admin 无需在后台手动分配即可访问，且重启幂等不产生重复记录。
 
 ## 验证
 
@@ -303,8 +304,9 @@ docker compose -f deploy/docker-compose/docker-compose.yaml config
 
 2026-07-21 本地验证结果：
 
-- 后端 `go build ./...` 通过，SQLite 健康接口返回 `200 / "ok"`。
-- PCDN 核心测试 `go test ./plugin/pcdn/service` 通过。
+- 后端 `go build ./...` 全量通过（含采集 Agent），SQLite 健康接口返回 `200 / "ok"`。
+- PCDN 核心单测 `go test ./plugin/pcdn/service` 通过：95 分位算法、95 值计算、流量幂等、告警收敛、账单生成（包月+p95+幂等）。
+- 菜单（8）与 API（35）均已在 `initialize` 注册，并通过 `initialize/auth.go` 自动授权给超级管理员(888)，写入 `sys_authority_menus` 与 `casbin_rule` 并刷新 Casbin。
 - 运营后台和个人门户生产构建通过，三个本地服务均可访问。
 - 全量 `go test ./...` 仍存在 MCP 会话、AI Markdown 渲染、自动路由和模板测试失败；这些问题不阻塞当前服务启动，但发布前应单独修复。
 
