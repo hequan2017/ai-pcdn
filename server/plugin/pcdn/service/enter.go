@@ -11,6 +11,8 @@ type ServiceGroup struct {
 	AlarmRecordService
 	AlarmEngineService
 	BillService
+	SettlementService
+	ProfitService
 }
 
 // ServiceGroupApp 全局服务组实例，供 api 层引用

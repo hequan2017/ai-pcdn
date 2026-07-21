@@ -11,6 +11,8 @@ type ApiGroup struct {
 	PortalApi
 	AlarmApi
 	BillApi
+	SettlementApi
+	ProfitApi
 }
 
 // ApiGroupApp 全局 API 组实例，供 router 层引用
@@ -26,4 +28,6 @@ var (
 	alarmRuleService   = pcdnService.ServiceGroupApp.AlarmRuleService
 	alarmRecordService = pcdnService.ServiceGroupApp.AlarmRecordService
 	billService        = pcdnService.ServiceGroupApp.BillService
+	settlementService  = pcdnService.ServiceGroupApp.SettlementService
+	profitService      = pcdnService.ServiceGroupApp.ProfitService
 )

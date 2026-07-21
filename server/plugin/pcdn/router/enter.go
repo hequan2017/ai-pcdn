@@ -9,6 +9,8 @@ type RouterGroup struct {
 	PortalRouter
 	AlarmRouter
 	BillRouter
+	SettlementRouter
+	ProfitRouter
 }
 
 // RouterGroupApp 全局路由组实例，供 initialize 层引用
@@ -21,4 +23,6 @@ var (
 	portalApi = api.ApiGroupApp.PortalApi
 	alarmApi  = api.ApiGroupApp.AlarmApi
 	billApi   = api.ApiGroupApp.BillApi
+	settlementApi = api.ApiGroupApp.SettlementApi
+	profitApi     = api.ApiGroupApp.ProfitApi
 )

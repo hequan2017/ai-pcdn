@@ -33,6 +33,15 @@ func Api(ctx context.Context) {
 		{Path: "/pcdn/admin/bill/approve", Description: "审核账单", ApiGroup: "PCDN账单", Method: "PUT"},
 		{Path: "/pcdn/admin/bill/reject", Description: "驳回账单", ApiGroup: "PCDN账单", Method: "PUT"},
 		{Path: "/pcdn/admin/bill/pay", Description: "账单付款", ApiGroup: "PCDN账单", Method: "PUT"},
+		{Path: "/pcdn/admin/settlement/import", Description: "导入结算单", ApiGroup: "PCDN对账", Method: "POST"},
+		{Path: "/pcdn/admin/settlement/recheck", Description: "重新核对", ApiGroup: "PCDN对账", Method: "PUT"},
+		{Path: "/pcdn/admin/settlement/list", Description: "结算单列表", ApiGroup: "PCDN对账", Method: "GET"},
+		{Path: "/pcdn/admin/settlement/revenue", Description: "应收汇总", ApiGroup: "PCDN对账", Method: "GET"},
+		{Path: "/pcdn/admin/settlement/delete", Description: "删除结算单", ApiGroup: "PCDN对账", Method: "DELETE"},
+		{Path: "/pcdn/admin/profit/summary", Description: "利润汇总", ApiGroup: "PCDN利润", Method: "GET"},
+		{Path: "/pcdn/admin/profit/revenueByPlatform", Description: "按平台收入", ApiGroup: "PCDN利润", Method: "GET"},
+		{Path: "/pcdn/admin/profit/costByOwner", Description: "按贡献者成本", ApiGroup: "PCDN利润", Method: "GET"},
+		{Path: "/pcdn/admin/profit/trend", Description: "利润趋势", ApiGroup: "PCDN利润", Method: "GET"},
 	}
 	utils.RegisterApis(entities...)
 }
