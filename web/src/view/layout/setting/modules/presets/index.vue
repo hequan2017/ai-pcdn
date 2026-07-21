@@ -1,3 +1,4 @@
+<!-- Modified for ai-pcdn on 2026-07-21: 更新主题导出文件的产品品牌。 -->
 <template>
   <div class="gva-theme-font">
     <!-- 内置预设 -->
@@ -151,12 +152,12 @@ const handleRemove = async (preset) => {
 }
 
 const handleExport = () => {
-  const data = serializePreset(themeStore.exportPreset('gin-vue-admin-theme'))
+  const data = serializePreset(themeStore.exportPreset('ai-pcdn-theme'))
   const blob = new Blob([data], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url
-  link.download = `gin-vue-admin-theme-${new Date().toISOString().split('T')[0]}.json`
+  link.download = `ai-pcdn-theme-${new Date().toISOString().split('T')[0]}.json`
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)

@@ -1,7 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg"
      viewBox="0 0 1080 1350"
      preserveAspectRatio="xMidYMid meet"
-     role="img" aria-label="GIN Vue Admin cover">
+     role="img" aria-label="ai-pcdn cover">
+
+  <!-- Modified for ai-pcdn on 2026-07-21: updated product-facing artwork text. -->
 
   <!-- ════════════════════════════════════════════════
        GIN Cover Redesign — SVG 版
@@ -119,7 +121,7 @@
 
     <!-- ── 顶部元信息行 ── -->
     <text x="96" y="63" font-size="12.5" letter-spacing="2.75"
-          fill="rgba(255,255,255,.6)">GIN-VUE-ADMIN</text>
+          fill="rgba(255,255,255,.6)">AI-PCDN</text>
     <text x="984" y="63" text-anchor="end" font-size="12.5" letter-spacing="2.75"
           fill="rgba(255,255,255,.6)">BACKEND · GO 1.22</text>
 
@@ -165,7 +167,7 @@
             fill="rgba(255,255,255,.9)">GO</text>
       <!-- 文件路径 -->
       <text x="343" y="488.5" font-size="13" letter-spacing="0.65"
-            fill="rgba(255,255,255,.6)">images / GinVueAdmin.go</text>
+            fill="rgba(255,255,255,.6)">images / AiPcdn.go</text>
       <!-- 分隔线 -->
       <line x1="221" y1="509" x2="859" y2="509"
             stroke="rgba(255,255,255,.12)" stroke-width="1"/>
@@ -181,7 +183,7 @@
       <text x="284" y="706.4" text-anchor="end" fill="rgba(255,255,255,.25)">5</text>
 
       <!-- 代码行 -->
-      <text x="310" y="560" xml:space="preserve"><tspan fill="#9db8ff">type</tspan><tspan fill="#ffffff" font-weight="500"> GinVueAdmin </tspan><tspan fill="#9db8ff">struct</tspan><tspan fill="rgba(220,230,255,.75)"> {</tspan></text>
+      <text x="310" y="560" xml:space="preserve"><tspan fill="#9db8ff">type</tspan><tspan fill="#ffffff" font-weight="500"> AiPcdn </tspan><tspan fill="#9db8ff">struct</tspan><tspan fill="rgba(220,230,255,.75)"> {</tspan></text>
 
       <text x="310" y="596.6" xml:space="preserve"><tspan fill="#7fa5ff">    gorm.Model</tspan></text>
 

@@ -1,5 +1,6 @@
 /*
- * gin-vue-admin web框架组
+ * ai-pcdn web 框架初始化（基于 Gin-Vue-Admin）
+ * Modified for ai-pcdn on 2026-07-21: 更新产品品牌，保留上游版权与授权声明。
  *
  * */
 // 加载网站配置文件夹
@@ -10,7 +11,8 @@ export default {
   install: (app) => {
     register(app)
     console.log(`
-       欢迎使用 Gin-Vue-Admin
+       欢迎使用 ai-pcdn
+       技术底座：Gin-Vue-Admin
        当前版本:v${packageInfo.version}
        加群方式:微信：shouzi_1994 QQ群：622360840
        项目地址：https://github.com/flipped-aurora/gin-vue-admin

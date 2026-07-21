@@ -1,3 +1,4 @@
+// Modified for ai-pcdn on 2026-07-21: 更新构建产物品牌，保留上游归属。
 import { viteLogo } from './src/core/config'
 import Banner from 'vite-plugin-banner'
 import * as path from 'path'
@@ -82,7 +83,7 @@ export default ({ mode }) => {
       vueDevTools({ launchEditor: env.VITE_EDITOR }),
       vuePlugin(),
       svgBuilder(['./src/plugin/', './src/assets/icons/'], base, outDir, 'assets', mode),
-      [Banner(`\n Build based on gin-vue-admin \n Time : ${timestamp}`)],
+      [Banner(`\n Build ai-pcdn based on gin-vue-admin \n Time : ${timestamp}`)],
       VueFilePathPlugin('./src/pathInfo.json'),
       UnoCSS(),
       vueRootValidator()

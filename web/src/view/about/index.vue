@@ -1,10 +1,11 @@
+<!-- Modified for ai-pcdn on 2026-07-21: 更新产品品牌，保留上游项目与版权归属。 -->
 <template>
   <div class="mt-2">
     <div class="flex flex-col md:flex-row gap-4">
       <div class="w-full md:w-1/2">
         <el-card class="min-w-96">
           <template #header>
-            <el-divider>gin-vue-admin</el-divider>
+            <el-divider>ai-pcdn</el-divider>
           </template>
           <div>
             <div class="w-full flex items-center justify-center">
@@ -12,10 +13,13 @@
                   <img
                     class="org-img dom-center"
                     src="@/assets/logo.png"
-                    alt="gin-vue-admin"
+                    alt="Gin-Vue-Admin"
                   />
                 </a>
             </div>
+            <p class="text-center text-sm text-slate-500 mb-4">
+              ai-pcdn 基于 Gin-Vue-Admin 开发
+            </p>
             <div class="w-full flex items-center justify-around">
               <a href="https://github.com/flipped-aurora/gin-vue-admin">
                   <img

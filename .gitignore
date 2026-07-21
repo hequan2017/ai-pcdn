@@ -46,3 +46,6 @@ web/pnpm-lock.yaml
 *.sqlite
 *.sqlite3
 worktrees/
+
+# Modified for ai-pcdn on 2026-07-21: one-click deployment runtime state.
+/deploy/docker-compose/runtime/
