@@ -142,11 +142,11 @@ func (r *Reporter) GetVersion() (*VersionInfo, error) {
 	return &res.Data, nil
 }
 
-// ReportPending 读 pending 全量上报，成功后清空（加锁串行化）
+// ReportPending 读 pending 全量上报，成功后只清理已读部分（保留读取期间新追加的点）
 func (r *Reporter) ReportPending(s *Store) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	points, err := s.ReadAll()
+	points, endOffset, err := s.ReadAll()
 	if err != nil {
 		return err
 	}
@@ -156,5 +156,5 @@ func (r *Reporter) ReportPending(s *Store) error {
 	if err := r.Report(points); err != nil {
 		return err
 	}
-	return s.Clear()
+	return s.ClearTo(endOffset)
 }

@@ -67,7 +67,9 @@ func (s *AlarmEngineService) evaluate(ctx context.Context, rule *model.PcdnAlarm
 
 	case model.AlarmMetricBandwidthLow:
 		var latest model.PcdnNodeTrafficPoint
-		_ = global.GVA_DB.WithContext(ctx).Where("node_id = ?", node.ID).Order("window_start desc").First(&latest).Error
+		if err := global.GVA_DB.WithContext(ctx).Where("node_id = ?", node.ID).Order("window_start desc").First(&latest).Error; err != nil {
+			return false, 0 // 无流量数据时不告警（中断由 AgentDown 规则负责）
+		}
 		cur := latest.RxMaxBps + latest.TxMaxBps
 		return cur < rule.Threshold, cur
 

@@ -37,6 +37,10 @@ func (a *SettlementApi) Import(c *gin.Context) {
 // @Router /pcdn/admin/settlement/recheck [put]
 func (a *SettlementApi) Recheck(c *gin.Context) {
 	period := c.Query("period")
+	if len(period) != 7 {
+		response.FailWithMessage("账期格式应为 YYYY-MM", c)
+		return
+	}
 	n, err := settlementService.Recheck(c.Request.Context(), period)
 	if err != nil {
 		response.FailWithMessage("核对失败", c)

@@ -26,12 +26,12 @@ func (s *NodeService) DeleteNodeByIds(ctx context.Context, ids []uint) error {
 	return global.GVA_DB.WithContext(ctx).Delete(&[]model.PcdnNode{}, "id in ?", ids).Error
 }
 
-// UpdateNode 更新节点（数据权限归属列 dept_id/created_by 防覆盖）
+// UpdateNode 更新节点（用 Select 显式列，避免零值 MonthlyPrice=0/P95UnitPrice=0 被跳过；保护 node_sn/token_hash/dept_id/created_by）
 func (s *NodeService) UpdateNode(ctx context.Context, node model.PcdnNode) error {
 	return global.GVA_DB.WithContext(ctx).
 		Model(&model.PcdnNode{}).
 		Where("id = ?", node.ID).
-		Omit("dept_id", "created_by", "node_sn", "token_hash").
+		Select("owner_name", "contact", "region", "isp", "platform", "platform_node_id", "group_id", "tags", "status", "billing_mode", "monthly_price", "p95_unit_price", "contract_period", "remark").
 		Updates(&node).Error
 }
 

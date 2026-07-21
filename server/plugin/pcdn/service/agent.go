@@ -25,7 +25,7 @@ func (s *AgentService) Activate(ctx context.Context, nodeID uint, reportIP strin
 			"status":            model.NodeStatusOnline,
 			"last_heartbeat_at": now,
 		}
-		if err := tx.Model(&model.PcdnNode{}).Where("id = ?", nodeID).Updates(updates).Error; err != nil {
+		if err := tx.Model(&model.PcdnNode{}).Where("id = ? AND status != ?", nodeID, model.NodeStatusDisabled).Updates(updates).Error; err != nil {
 			return err
 		}
 		if len(req.Ifaces) > 0 {

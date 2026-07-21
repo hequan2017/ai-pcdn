@@ -20,7 +20,9 @@ func (s *ReleaseService) DeleteRelease(ctx context.Context, id uint) error {
 }
 
 func (s *ReleaseService) UpdateRelease(ctx context.Context, r model.PcdnAgentRelease) error {
-	return global.GVA_DB.WithContext(ctx).Model(&model.PcdnAgentRelease{}).Where("id = ?", r.ID).Omit("dept_id", "created_by").Updates(&r).Error
+	// 用 Select 显式列，避免零值 Stable=false / Force=false 被跳过
+	return global.GVA_DB.WithContext(ctx).Model(&model.PcdnAgentRelease{}).Where("id = ?", r.ID).
+		Select("version", "download_url", "checksum", "stable", "force", "remark").Updates(&r).Error
 }
 
 func (s *ReleaseService) GetRelease(ctx context.Context, id uint) (r model.PcdnAgentRelease, err error) {

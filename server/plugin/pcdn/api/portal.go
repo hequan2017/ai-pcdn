@@ -80,7 +80,9 @@ func (a *PortalApi) AddNode(c *gin.Context) {
 		response.FailWithMessage("添加失败", c)
 		return
 	}
-	installScript := fmt.Sprintf("curl -fsSL https://%s/pcdn/portal/install/%s.sh | bash", c.Request.Host, token)
+	// 不使用 curl|bash（install 端点未实现，会 404）+ 不拼接 c.Request.Host（Host 头可被篡改导致脚本注入），
+	// 改为返回 agent 启动命令，后端地址由用户填写。
+	installScript := fmt.Sprintf("# 在节点服务器执行（替换 <后端地址>）：\n./pcdn-agent -server <后端地址> -sn %s -token %s", node.NodeSn, token)
 	response.OkWithDetailed(gin.H{
 		"nodeSn":        node.NodeSn,
 		"token":         token,
@@ -122,7 +124,10 @@ func (a *PortalApi) MyNodes(c *gin.Context) {
 func (a *PortalApi) MyBills(c *gin.Context) {
 	ownerID := utils.GetUserID(c)
 	var info request.BillSearch
-	_ = c.ShouldBindQuery(&info)
+	if err := c.ShouldBindQuery(&info); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 	list, total, err := billService.GetBillsByOwner(c.Request.Context(), ownerID, info)
 	if err != nil {
 		response.FailWithMessage("查询失败", c)

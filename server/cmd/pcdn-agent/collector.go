@@ -9,18 +9,20 @@ import (
 	"time"
 )
 
-// Collector 网卡流量采集器：每秒采样字节差值得 bps，每分钟取峰值
+// Collector 网卡流量采集器：按实际时间差计算 bps，每分钟取峰值
 type Collector struct {
-	ifaces map[string]bool // 空=所有非lo
-	last   map[string][2]uint64
-	curMax map[string][2]int64 // [rxBps, txBps]
+	ifaces   map[string]bool        // 空=所有非lo
+	last     map[string][2]uint64   // 上次字节计数
+	lastTime map[string]time.Time   // 上次采样时间
+	curMax   map[string][2]int64    // 当前分钟峰值 [rxBps, txBps]
 }
 
 func NewCollector(ifaces []string) *Collector {
 	c := &Collector{
-		ifaces: map[string]bool{},
-		last:   map[string][2]uint64{},
-		curMax: map[string][2]int64{},
+		ifaces:   map[string]bool{},
+		last:     map[string][2]uint64{},
+		lastTime: map[string]time.Time{},
+		curMax:   map[string][2]int64{},
 	}
 	for _, f := range ifaces {
 		c.ifaces[strings.TrimSpace(f)] = true
@@ -28,12 +30,13 @@ func NewCollector(ifaces []string) *Collector {
 	return c
 }
 
-// Sample 每秒采样：算与上次差值(bps)，更新当前分钟峰值
+// Sample 采样：按实际时间差计算 bps（避免 ticker 漂移导致 bps 高估），更新当前分钟峰值
 func (c *Collector) Sample() {
 	cur, err := readProcNetDev()
 	if err != nil {
 		return
 	}
+	now := time.Now()
 	for iface, bytes := range cur {
 		if iface == "lo" {
 			continue
@@ -44,11 +47,17 @@ func (c *Collector) Sample() {
 		last, ok := c.last[iface]
 		if !ok {
 			c.last[iface] = bytes
+			c.lastTime[iface] = now
 			continue
 		}
-		// 差值 ×8 = bps（每秒采样，间隔约1s）
-		rxBps := int64(bytes[0]-last[0]) * 8
-		txBps := int64(bytes[1]-last[1]) * 8
+		dt := now.Sub(c.lastTime[iface]).Seconds()
+		c.last[iface] = bytes
+		c.lastTime[iface] = now
+		if dt <= 0 {
+			continue
+		}
+		rxBps := int64(float64(bytes[0]-last[0]) * 8 / dt)
+		txBps := int64(float64(bytes[1]-last[1]) * 8 / dt)
 		mx := c.curMax[iface]
 		if rxBps > mx[0] {
 			mx[0] = rxBps
@@ -57,7 +66,6 @@ func (c *Collector) Sample() {
 			mx[1] = txBps
 		}
 		c.curMax[iface] = mx
-		c.last[iface] = bytes
 	}
 }
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -9,7 +10,8 @@ import (
 )
 
 // Store 本地 JSONL 持久化（pending 队列）。每行一个 TrafficPoint。
-// 上报成功后整体清空；失败保留由重试任务兜底。并发由 mu 保护。
+// 并发由 mu 保护；上报流程用 ReadAll(返回已读边界 offset) + ClearTo(offset)，
+// 只截断已读部分，保留读取期间新 Append 的点，避免数据丢失。
 type Store struct {
 	mu   sync.Mutex
 	path string
@@ -38,18 +40,23 @@ func (s *Store) Append(p TrafficPoint) error {
 	return err
 }
 
-// ReadAll 读取全部 pending 点
-func (s *Store) ReadAll() ([]TrafficPoint, error) {
+// ReadAll 读取全部 pending 点，并返回读取时的文件大小（已读边界 offset）。
+// 调用方上报成功后应调 ClearTo(offset) 只清理已读部分。
+func (s *Store) ReadAll() (points []TrafficPoint, offset int64, err error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+	info, statErr := os.Stat(s.path)
+	if statErr != nil {
+		if os.IsNotExist(statErr) {
+			return nil, 0, nil
+		}
+		return nil, 0, statErr
+	}
+	offset = info.Size()
 	data, err := os.ReadFile(s.path)
 	if err != nil {
-		if os.IsNotExist(err) {
-			return nil, nil
-		}
-		return nil, err
+		return nil, offset, err
 	}
-	var points []TrafficPoint
 	for _, line := range strings.Split(string(data), "\n") {
 		if line == "" {
 			continue
@@ -57,14 +64,31 @@ func (s *Store) ReadAll() ([]TrafficPoint, error) {
 		var p TrafficPoint
 		if json.Unmarshal([]byte(line), &p) == nil {
 			points = append(points, p)
+		} else {
+			log.Printf("跳过损坏的 pending 行: %q", line)
 		}
 	}
-	return points, nil
+	return points, offset, nil
 }
 
-// Clear 清空 pending（上报成功后调用）
-func (s *Store) Clear() error {
+// ClearTo 截断已读部分：若期间有新数据追加（当前 size > offset），保留 [offset, 当前) 并移到文件头；否则清空。
+func (s *Store) ClearTo(offset int64) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	return os.Truncate(s.path, 0)
+	info, err := os.Stat(s.path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+	curSize := info.Size()
+	if offset <= 0 || offset >= curSize {
+		return os.Truncate(s.path, 0)
+	}
+	data, err := os.ReadFile(s.path)
+	if err != nil {
+		return os.Truncate(s.path, 0)
+	}
+	return os.WriteFile(s.path, data[offset:], 0o644)
 }

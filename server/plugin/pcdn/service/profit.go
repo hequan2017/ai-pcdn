@@ -73,7 +73,7 @@ func (s *ProfitService) GetCostByOwner(ctx context.Context, period string) ([]Ow
 	var list []OwnerCost
 	global.GVA_DB.WithContext(ctx).Model(&model.PcdnBill{}).
 		Select("owner_name, COALESCE(SUM(total_amount),0) as cost, COUNT(*) as count").
-		Where("period = ?", period).
+		Where("period = ? AND status IN ?", period, []string{model.BillStatusApproved, model.BillStatusPaid}).
 		Group("owner_name").Scan(&list)
 	return list, nil
 }

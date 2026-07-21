@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"runtime"
 	"time"
 )
 
@@ -19,6 +20,12 @@ type VersionInfo struct {
 	Checksum    string `json:"checksum"`
 	Force       bool   `json:"force"`
 }
+
+// 下载客户端：限制超时，防止慢源阻塞 upgradeLoop
+var dlClient = &http.Client{Timeout: 5 * time.Minute}
+
+// maxDownloadBytes 下载大小上限，防止恶意大文件撑爆磁盘
+const maxDownloadBytes = 500 * (1 << 20)
 
 // upgradeLoop 每小时检查自升级
 func upgradeLoop(r *Reporter, currentVersion string) {
@@ -33,6 +40,10 @@ func upgradeLoop(r *Reporter, currentVersion string) {
 
 // CheckAndUpgrade 发现新版本则下载、校验、替换、重启
 func CheckAndUpgrade(r *Reporter, currentVersion string) error {
+	// Windows 不支持运行中 exe 替换与 syscall.Exec 重启，跳过自升级
+	if runtime.GOOS == "windows" {
+		return nil
+	}
 	info, err := r.GetVersion()
 	if err != nil || !info.Latest {
 		return nil
@@ -46,16 +57,19 @@ func CheckAndUpgrade(r *Reporter, currentVersion string) error {
 	if err := downloadFile(info.DownloadURL, tmp); err != nil {
 		return err
 	}
-	if info.Checksum != "" {
-		sum, err := sha256File(tmp)
-		if err != nil {
-			os.Remove(tmp)
-			return err
-		}
-		if sum != info.Checksum {
-			os.Remove(tmp)
-			return fmt.Errorf("checksum mismatch")
-		}
+	// checksum 必填：空则拒绝升级（防止下载源被替换/投毒）
+	if info.Checksum == "" {
+		os.Remove(tmp)
+		return fmt.Errorf("服务端未提供 checksum，拒绝升级")
+	}
+	sum, err := sha256File(tmp)
+	if err != nil {
+		os.Remove(tmp)
+		return err
+	}
+	if sum != info.Checksum {
+		os.Remove(tmp)
+		return fmt.Errorf("checksum mismatch")
 	}
 	if err := os.Chmod(tmp, 0o755); err != nil {
 		os.Remove(tmp)
@@ -64,10 +78,12 @@ func CheckAndUpgrade(r *Reporter, currentVersion string) error {
 	old := os.Args[0] + ".old"
 	os.Remove(old)
 	if err := os.Rename(os.Args[0], old); err != nil {
+		os.Remove(tmp)
 		return err
 	}
 	if err := os.Rename(tmp, os.Args[0]); err != nil {
 		os.Rename(old, os.Args[0])
+		os.Remove(tmp)
 		return err
 	}
 	log.Printf("升级完成，重启")
@@ -75,7 +91,7 @@ func CheckAndUpgrade(r *Reporter, currentVersion string) error {
 }
 
 func downloadFile(url, path string) error {
-	resp, err := http.Get(url)
+	resp, err := dlClient.Get(url)
 	if err != nil {
 		return err
 	}
@@ -88,7 +104,7 @@ func downloadFile(url, path string) error {
 		return err
 	}
 	defer out.Close()
-	_, err = io.Copy(out, resp.Body)
+	_, err = io.Copy(out, io.LimitReader(resp.Body, maxDownloadBytes))
 	return err
 }
 

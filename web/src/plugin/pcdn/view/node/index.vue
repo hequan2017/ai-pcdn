@@ -259,15 +259,11 @@
     nextTick(() => {
       if (!chartRef.value) return
       chart = chart || echarts.init(chartRef.value)
-      const times = [...new Set(list.map((p) => p.windowStart))].sort()
-      const rx = times.map((t) => {
-        const p = list.find((x) => x.windowStart === t)
-        return p ? +(p.rxMaxBps / 1e6).toFixed(2) : 0
-      })
-      const tx = times.map((t) => {
-        const p = list.find((x) => x.windowStart === t)
-        return p ? +(p.txMaxBps / 1e6).toFixed(2) : 0
-      })
+      // 多网卡时按选中网卡过滤，选"全部"则聚合（sum）各网卡，避免只画第一张
+      const filtered = list.filter((p) => !trafficIface.value || p.ifaceName === trafficIface.value)
+      const times = [...new Set(filtered.map((p) => p.windowStart))].sort()
+      const rx = times.map((t) => +((filtered.filter((p) => p.windowStart === t).reduce((s, p) => s + (p.rxMaxBps || 0), 0)) / 1e6).toFixed(2))
+      const tx = times.map((t) => +((filtered.filter((p) => p.windowStart === t).reduce((s, p) => s + (p.txMaxBps || 0), 0)) / 1e6).toFixed(2))
       chart.setOption({
         tooltip: { trigger: 'axis' },
         legend: { data: ['下行Mbps', '上行Mbps'] },

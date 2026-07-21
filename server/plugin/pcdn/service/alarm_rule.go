@@ -24,10 +24,11 @@ func (s *AlarmRuleService) DeleteAlarmRuleByIds(ctx context.Context, ids []uint)
 }
 
 func (s *AlarmRuleService) UpdateAlarmRule(ctx context.Context, rule model.PcdnAlarmRule) error {
+	// 用 Select 显式列，避免 GORM Updates 跳过零值（Enabled=false / Threshold=0 / DurationSec=0）
 	return global.GVA_DB.WithContext(ctx).
 		Model(&model.PcdnAlarmRule{}).
 		Where("id = ?", rule.ID).
-		Omit("dept_id", "created_by").
+		Select("name", "scope_type", "scope_value", "metric", "threshold", "duration_sec", "notify_config", "enabled").
 		Updates(&rule).Error
 }
 

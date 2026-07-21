@@ -71,6 +71,10 @@ func (a *NodeApi) DeleteNodeByIds(c *gin.Context) {
 	}
 	ids := make([]uint, 0, len(req.Ids))
 	for _, id := range req.Ids {
+		if id <= 0 {
+			response.FailWithMessage("非法ID", c)
+			return
+		}
 		ids = append(ids, uint(id))
 	}
 	if err := nodeService.DeleteNodeByIds(c.Request.Context(), ids); err != nil {

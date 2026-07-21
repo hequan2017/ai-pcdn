@@ -16,7 +16,10 @@ type ProfitApi struct{}
 // @Router /pcdn/admin/profit/summary [get]
 func (a *ProfitApi) GetProfitSummary(c *gin.Context) {
 	var q request.ProfitQuery
-	_ = c.ShouldBindQuery(&q)
+	if err := c.ShouldBindQuery(&q); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 	sum, err := profitService.GetProfitSummary(c.Request.Context(), q.Period)
 	if err != nil {
 		response.FailWithMessage("查询失败", c)
@@ -62,7 +65,10 @@ func (a *ProfitApi) GetCostByOwner(c *gin.Context) {
 // @Router /pcdn/admin/profit/trend [get]
 func (a *ProfitApi) GetProfitTrend(c *gin.Context) {
 	var q request.ProfitQuery
-	_ = c.ShouldBindQuery(&q)
+	if err := c.ShouldBindQuery(&q); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 	list, err := profitService.GetProfitTrend(c.Request.Context(), q.Months)
 	if err != nil {
 		response.FailWithMessage("查询失败", c)
